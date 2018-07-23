@@ -22,8 +22,8 @@ namespace BbB.Data
         public string UserName { get; set; }
         public string EmailAddress { get; set; }
         public string Pass { get; set; }
-        public decimal Credit { get; set; }
         public string Company { get; set; }
+        public decimal Credit { get; set; }
 
         public ICollection<ArchiveOrder> ArchiveOrder { get; set; }
         public ICollection<ArchiveUserJoin> ArchiveUserJoin { get; set; }

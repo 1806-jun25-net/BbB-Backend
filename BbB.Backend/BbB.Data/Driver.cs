@@ -14,11 +14,11 @@ namespace BbB.Data
         }
 
         public int Id { get; set; }
-        public int PersonId { get; set; }
+        public int UserId { get; set; }
         public int? Seats { get; set; }
         public string MeetLoc { get; set; }
 
-        public Usr Person { get; set; }
+        public Usr User { get; set; }
         public ICollection<ArchiveDrive> ArchiveDrive { get; set; }
         public ICollection<Drive> Drive { get; set; }
         public ICollection<DriverReview> DriverReview { get; set; }

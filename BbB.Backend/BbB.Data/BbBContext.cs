@@ -144,9 +144,9 @@ namespace BbB.Data
             {
                 entity.Property(e => e.MeetLoc).HasMaxLength(16);
 
-                entity.HasOne(d => d.Person)
+                entity.HasOne(d => d.User)
                     .WithMany(p => p.Driver)
-                    .HasForeignKey(d => d.PersonId)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Driver");
             });
@@ -283,11 +283,11 @@ namespace BbB.Data
             modelBuilder.Entity<Usr>(entity =>
             {
                 entity.HasIndex(e => e.EmailAddress)
-                    .HasName("UQ__Usr__49A14740179E2C8A")
+                    .HasName("UQ__Usr__49A147403A481E82")
                     .IsUnique();
 
                 entity.HasIndex(e => e.UserName)
-                    .HasName("UQ__Usr__C9F28456075BFADF")
+                    .HasName("UQ__Usr__C9F28456B3CD76E2")
                     .IsUnique();
 
                 entity.Property(e => e.Company).HasMaxLength(20);

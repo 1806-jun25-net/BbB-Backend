@@ -9,7 +9,7 @@ namespace BbB.Data
 {
     public class Mapper
     {
-        public static void Main()
+        public static void MapperMain()
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
