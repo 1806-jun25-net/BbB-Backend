@@ -8,5 +8,6 @@ namespace BbB.Library
 {
     public class ArchiveItem
     {
+
     }
 }
