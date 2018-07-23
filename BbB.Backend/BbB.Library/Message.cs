@@ -8,5 +8,15 @@ namespace BbB.Library
 {
     public class Message
     {
+        public User From { get; }
+        public User To { get; }
+        public string Content { get; }
+
+        public Message(User from, User to, string content)
+        {
+            From = from;
+            To = to;
+            Content = content;
+        }
     }
 }
