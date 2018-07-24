@@ -104,6 +104,13 @@ namespace BbB.Data
             bbBContext.SaveChanges();
         }
 
+        public void AddUserCredit(int id, decimal credit)
+        {
+            Usr lookup = bbBContext.Usr.Where(x => x.Id == id).First();
+            lookup.Credit += credit;
+            bbBContext.SaveChanges();
+        }
+
         public void AddDriver(int userId, int seats, string meetingLoc)
         {
             var driver = new Driver
