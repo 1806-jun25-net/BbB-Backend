@@ -124,8 +124,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArchiveItem.cs" />
+    <Compile Include="DataRepository.cs" />
     <Compile Include="Destination.cs" />
     <Compile Include="JoinDrive.cs" />
+    <Compile Include="Mapper.cs" />
     <Compile Include="MenuItem.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Drive.cs" />
@@ -138,6 +140,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BbB.Data\BbB.Data.csproj">
+      <Project>{259a1b09-cf62-429c-8f8d-57418040f2ed}</Project>
+      <Name>BbB.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
