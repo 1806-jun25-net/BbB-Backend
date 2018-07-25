@@ -49,6 +49,20 @@ namespace BbB.Data
             return driverReviews;
         }
 
+        public bool VerifyLogin(string username, string pass)
+        {
+            List<Usr> usrs = bbBContext.Usr.AsNoTracking().ToList();
+
+            foreach (var item in usrs)
+            {
+                if (item.UserName == username && item.Pass == pass)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public bool CheckUserName(string name)
         {
             List<Usr> usrs = bbBContext.Usr.AsNoTracking().ToList();
