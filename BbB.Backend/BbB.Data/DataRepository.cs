@@ -114,15 +114,46 @@ namespace BbB.Data
                 Pass = pass,
                 Company = company
             };
-            bbBContext.Add(usr);
-            bbBContext.SaveChanges();
+
+            try
+            {
+                bbBContext.Add(usr);
+                bbBContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public void AddUserCredit(int id, decimal credit)
         {
             Usr lookup = bbBContext.Usr.Where(x => x.Id == id).First();
             lookup.Credit += credit;
-            bbBContext.SaveChanges();
+
+            try
+            {
+                bbBContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public void RemoveUserCredit(int id, decimal credit)
+        {
+            Usr lookup = bbBContext.Usr.Where(x => x.Id == id).First();
+            lookup.Credit -= credit;
+
+            try
+            {
+                bbBContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public void AddDriver(int userId, int seats, string meetingLoc)
@@ -133,8 +164,16 @@ namespace BbB.Data
                 Seats = seats,
                 MeetLoc = meetingLoc
             };
-            bbBContext.Add(driver);
-            bbBContext.SaveChanges();
+
+            try
+            {
+                bbBContext.Add(driver);
+                bbBContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public void AddArchiveDrive(int driverId, int destinationId, string dtype, DateTime dtime)
@@ -146,8 +185,16 @@ namespace BbB.Data
                 Dtype = dtype,
                 Dtime = dtime
             };
-            bbBContext.Add(archiveDrive);
-            bbBContext.SaveChanges();
+
+            try
+            {
+                bbBContext.Add(archiveDrive);
+                bbBContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
