@@ -72,7 +72,5 @@ namespace BbB.Library
         {
             return (int)Math.Truncate(Rating);
         }
-
-
     }
 }

@@ -85,6 +85,29 @@ namespace BbB.Library
             MenuReal.Add(new MenuItem(name, cost));
             return true;
         }
-        
+
+        /// <summary>
+        /// Adds item with given attributes to menu.
+        /// If item with name already exists, updates price
+        /// returns true if added, false if changed
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="cost"></param>
+        public bool AddItem(MenuItem add)
+        {
+            if (MenuReal == null)
+                MenuReal = new List<MenuItem>();
+            foreach (MenuItem item in MenuReal)
+            {
+                if (item.Name == add.Name)
+                {
+                    item.Cost = add.Cost;
+                    return false;
+                }
+            }
+            MenuReal.Add(add);
+            return true;
+        }
+
     }
 }

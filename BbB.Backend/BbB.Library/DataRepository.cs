@@ -18,36 +18,44 @@ namespace BbB.Library
 
         public List<Drive> GetDrives(string Company)
         {
-            List<Drive> drives = bbBContext.Drive.Include(d => d.Destination)
-                .Include(dr => dr.Driver).Include(u => u.UserJoin).AsNoTracking().ToList();
-            return drives;
+            return Mapper.Map(bbBContext.Drive.Include(d => d.Destination)
+                .Include(dr => dr.Driver).Include(u => u.UserJoin).AsNoTracking().ToList());
         }
 
         public List<Destination> GetDestinations()
         {
-            List<Destination> destinations = bbBContext.Destination.Include(m => m.MenuItem)
-                .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().ToList();
-            return destinations;
+            return Mapper.Map(bbBContext.Destination.Include(m => m.MenuItem)
+                .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().ToList());
         }
 
-        public List<Msg> GetMsgs()
+        public List<Message> GetMsgFrom()
         {
-            List<Msg> msgs = bbBContext.Msg.Include(r => r.Receiver).Include(s => s.Sender).AsNoTracking().ToList();
-            return msgs;
+            //TODO
+            return null;
+        }
+
+        public List<Message> GetMsgTo()
+        {
+            //TODO
+            return null;
         }
 
         public List<UserReview> GetUserReviews()
         {
-            List<UserReview> userReviews = bbBContext.UserReview.Include(d => d.DriverId)
+            return bbBContext.UserReview.Include(d => d.DriverId)
                 .Include(u => u.UserId).AsNoTracking().ToList();
-            return userReviews;
         }
 
         public List<DriverReview> GetDriverReviews()
         {
-            List<DriverReview> driverReviews = bbBContext.DriverReview.Include(d => d.DriverId)
+            return bbBContext.DriverReview.Include(d => d.DriverId)
                 .Include(u => u.UserId).AsNoTracking().ToList();
-            return driverReviews;
+        }
+
+        public List<MenuItem> GetMenuItems(int destId)
+        {
+            return
+
         }
 
         public bool VerifyLogin(string username, string pass)
@@ -94,7 +102,7 @@ namespace BbB.Library
 
         public int? LookupDestinationId(string name)
         {
-            List<Destination> destinations = bbBContext.Destination.AsTracking().ToList();
+            List<Data.Destination> destinations = bbBContext.Destination.AsTracking().ToList();
 
             foreach (var item in destinations)
             {
@@ -157,6 +165,7 @@ namespace BbB.Library
             }
         }
 
+        
         public void AddDriver(int userId, int seats, string meetingLoc)
         {
             var driver = new Driver
