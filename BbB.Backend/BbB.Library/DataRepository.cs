@@ -3,8 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BbB.Data;
 
-namespace BbB.Data
+namespace BbB.Library
 {
     public class DataRepository
     {
@@ -15,7 +16,7 @@ namespace BbB.Data
             bbBContext = input ?? throw new ArgumentException(nameof(input));
         }
 
-        public List<Drive> GetDrives()
+        public List<Drive> GetDrives(string Company)
         {
             List<Drive> drives = bbBContext.Drive.Include(d => d.Destination)
                 .Include(dr => dr.Driver).Include(u => u.UserJoin).AsNoTracking().ToList();
