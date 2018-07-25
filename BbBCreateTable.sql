@@ -3,8 +3,8 @@ Id Int Identity Not Null,
 UserName NVarChar(16) Unique Not Null,
 EmailAddress NVarChar(30) Unique Not Null,
 Pass NVarChar(32) Not Null,
-Credit Decimal Not Null,
 Company NVarChar(20),
+Credit Decimal Not Null,
 Constraint PK_Usr Primary Key (Id));
 
 Create Table Destination (
@@ -15,11 +15,11 @@ Constraint PK_Destination Primary Key (Id));
 
 Create Table Driver (
 Id Int Identity Not Null,
-PersonId Int Not Null,
+UserId Int Not Null,
 Seats Int,
 MeetLoc NVarChar(16),
 Constraint PK_Driver Primary Key (Id),
-Constraint FK_Driver Foreign Key (PersonId) References Usr (Id));
+Constraint FK_Driver Foreign Key (UserId) References Usr (Id));
 
 Create Table Msg (
 Id Int Identity Not Null,
