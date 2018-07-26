@@ -33,7 +33,7 @@ namespace BbB.API
 
             services.AddScoped<DataRepository>();
             //services.AddScoped<BbBContext>();
-            services.AddDbContext<BbBContext>(db => db.UseSqlServer("Server=tcp:knain-1806.database.windows.net,1433;Initial Catalog=BbB;Persist Security Info=False;User ID=knain;Password=Wayne24620;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
+            services.AddDbContext<BbBContext>(db => db.UseSqlServer("Server=tcp:knain-1806.database.windows.net,1433;Initial Catalog=BbB;Persist Security Info=False;User ID=;Password=;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
 
             services.AddSwaggerGen(c =>
             {
