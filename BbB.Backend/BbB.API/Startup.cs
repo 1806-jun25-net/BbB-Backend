@@ -19,6 +19,8 @@ namespace BbB.API
 {
     public class Startup
     {
+        private string connectionString = null;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,8 +34,9 @@ namespace BbB.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddScoped<DataRepository>();
-            //services.AddScoped<BbBContext>();
-            services.AddDbContext<BbBContext>(db => db.UseSqlServer("Server=tcp:knain-1806.database.windows.net,1433;Initial Catalog=BbB;Persist Security Info=False;User ID=;Password=;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
+
+            connectionString = Configuration.GetConnectionString("BbB");
+            services.AddDbContext<BbBContext>(db => db.UseSqlServer(connectionString));
 
             services.AddSwaggerGen(c =>
             {
@@ -44,6 +47,13 @@ namespace BbB.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json",
+                     optional: false,
+                     reloadOnChange: true)
+                .AddEnvironmentVariables();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
