@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace BbB.Library
@@ -260,6 +261,96 @@ namespace BbB.Library
             return m;
         }
         
+        public static IEnumerable<Destination> Map(IEnumerable<Data.Destination> destinations)
+        {
+            return destinations.Select(Map);
+        }
+
+        public static IEnumerable<Data.Destination> Map(IEnumerable<Destination> destinations)
+        {
+            return destinations.Select(Map);
+        }
+
+        public static IEnumerable<Driver> Map(IEnumerable<Data.Driver> drivers)
+        {
+            return drivers.Select(Map);
+        }
+
+        public static IEnumerable<Data.Driver> Map(IEnumerable<Driver> drivers)
+        {
+            return drivers.Select(Map);
+        }
+
+        public static IEnumerable<User> Map(IEnumerable<Data.Usr> users)
+        {
+            return users.Select(Map);
+        }
+
+        public static IEnumerable<Data.Usr> Map(IEnumerable<User> users)
+        {
+            return users.Select(Map);
+        }
+
+        public static IEnumerable<Drive> Map(IEnumerable<Data.Drive> drives)
+        {
+            return drives.Select(Map);
+        }
+
+        public static IEnumerable<Drive> Map(IEnumerable<Data.ArchiveDrive> drives)
+        {
+            return drives.Select(Map);
+        }
+
+        public static IEnumerable<Data.Drive> MapActive(IEnumerable<Drive> drives)
+        {
+            return drives.Select(MapActive);
+        }
+
+        public static IEnumerable<Data.ArchiveDrive> MapArchive(IEnumerable<Drive> drives)
+        {
+            return drives.Select(MapArchive);
+        }
+
+        public static IEnumerable<OrderItem> Map(IEnumerable<Data.OrderItem> items)
+        {
+            return items.Select(Map);
+        }
+
+        public static IEnumerable<OrderItem> Map(IEnumerable<Data.ArchiveItem> items)
+        {
+            return items.Select(Map);
+        }
+
+        public static IEnumerable<Data.OrderItem> Map(IEnumerable<OrderItem> items, int destId)
+        {
+            return items.Select(i=>Map(i,destId));
+        }
+
+        public static IEnumerable<Data.ArchiveItem> Map(IEnumerable<OrderItem> items)
+        {
+            return items.Select(i=>Map(i));
+        }
+
+
+        public static IEnumerable<MenuItem> Map(IEnumerable<Data.MenuItem> items)
+        {
+            return items.Select(Map);
+        }
+
+        public static IEnumerable<Data.MenuItem> Map(IEnumerable<MenuItem> items, int destId)
+        {
+            return items.Select(i=>Map(i,destId));
+        }
+
+        public static IEnumerable<Message> Map(IEnumerable<Data.Msg> items)
+        {
+            return items.Select(Map);
+        }
+
+        public static IEnumerable<Data.Msg> Map(IEnumerable<Message> items)
+        {
+            return items.Select(Map);
+        }
 
     }
 }
