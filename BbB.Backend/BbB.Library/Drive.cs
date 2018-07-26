@@ -32,7 +32,7 @@ namespace BbB.Library
         /// Number of minutes prior to Time that the drive is finalized
         /// only for active orders
         /// </summary>
-        public static int Buffer = 30;
+        public static readonly int Buffer = 30;
         //public int Buffer { get; set; }
 
         /// <summary>

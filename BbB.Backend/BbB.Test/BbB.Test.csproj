@@ -13,4 +13,9 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BbB.Data\BbB.Data.csproj" />
+    <ProjectReference Include="..\BbB.Library\BbB.Library.csproj" />
+  </ItemGroup>
+
 </Project>

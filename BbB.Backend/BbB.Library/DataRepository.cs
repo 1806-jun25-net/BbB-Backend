@@ -15,7 +15,7 @@ namespace BbB.Library
         {
             bbBContext = input ?? throw new ArgumentException(nameof(input));
         }
-
+        
         public IEnumerable<Drive> GetDrives(string Company)
         {
             return Mapper.Map(bbBContext.Drive.Include(d => d.Destination)

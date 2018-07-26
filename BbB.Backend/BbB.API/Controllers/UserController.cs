@@ -26,7 +26,7 @@ namespace BbB.API.Controllers
         public ActionResult<List<User>> Get()
         {
 
-            //return ;
+            return null;
         }
 
         [HttpGet("{id}")]
