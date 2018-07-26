@@ -16,6 +16,11 @@ namespace BbB.Library
             bbBContext = input ?? throw new ArgumentException(nameof(input));
         }
 
+        public IEnumerable<User> GetUsers()
+        {
+            return Mapper.Map(bbBContext.Usr.AsNoTracking().ToList());
+        }
+
         public IEnumerable<Drive> GetDrives(string Company)
         {
             return Mapper.Map(bbBContext.Drive.Include(d => d.Destination)
