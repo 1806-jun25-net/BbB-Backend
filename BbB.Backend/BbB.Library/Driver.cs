@@ -43,6 +43,24 @@ namespace BbB.Library
         }
 
         /// <summary>
+        /// Creates a new Driver based on an existing user
+        /// </summary>
+        /// <param name="user"></param>
+        public Driver(User user)
+        {
+            Id = user.Id;
+            Company = user.Company;
+            Name = user.Name;
+            Email = user.Email;
+            Credit = user.Credit;
+            Rating = user.Rating;
+            DriverId = -1;
+            Seats = 3;
+            MeetLoc = "";
+            DriverRating = 0;
+        }
+
+        /// <summary>
         /// Average rating as a driver
         /// </summary>
         /// <returns></returns>

@@ -8,11 +8,14 @@ namespace BbB.Library
 {
     public class OrderItem
     {
+
+        public int Id { get; }
+
         /// <summary>
         /// Item if the order is active.
         /// Is an untracked item otherwise.
         /// </summary>
-        private MenuItem Item { get; set; }
+        public MenuItem Item { get;}
 
         /// <summary>
         /// how many of the item
@@ -30,8 +33,9 @@ namespace BbB.Library
         /// <param name="item"></param>
         /// <param name="quantity"></param>
         /// <param name="message"></param>
-        public OrderItem(MenuItem item, int quantity=1, string message = "")
+        public OrderItem(MenuItem item, int quantity = 1, string message = "", int id = -1)
         {
+            Id = id;
             Item = item;
             Quantity = quantity;
             Message = message;
@@ -42,7 +46,7 @@ namespace BbB.Library
         /// </summary>
         /// <param name="name"></param>
         /// <param name="cost"></param>
-        public OrderItem(string name, decimal cost):this(new MenuItem(name, cost))
+        public OrderItem(string name, decimal cost, int quantity= 1, string message = "") :this(new MenuItem(name, cost))
         { }
     }
 }
