@@ -23,10 +23,10 @@ namespace BbB.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<User>> Get()
+        public IEnumerable<User> Get()
         {
 
-            return null;
+            //return ;
         }
 
         [HttpGet("{id}")]
