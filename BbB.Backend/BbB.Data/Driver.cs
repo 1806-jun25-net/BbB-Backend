@@ -17,6 +17,7 @@ namespace BbB.Data
         public int UserId { get; set; }
         public int? Seats { get; set; }
         public string MeetLoc { get; set; }
+        public decimal? Rating { get; set; }
 
         public Usr User { get; set; }
         public ICollection<ArchiveDrive> ArchiveDrive { get; set; }

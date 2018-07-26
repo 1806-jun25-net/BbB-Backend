@@ -54,7 +54,7 @@ namespace BbB.Library
 
         public List<MenuItem> GetMenuItems(int destId)
         {
-            return
+            //return
 
         }
 
@@ -166,11 +166,11 @@ namespace BbB.Library
         }
 
         
-        public void AddDriver(int userId, int seats, string meetingLoc)
+        public void AddDriver(int driverId, int seats, string meetingLoc)
         {
             var driver = new Driver
             {
-                UserId = userId,
+                DriverId = driverId,
                 Seats = seats,
                 MeetLoc = meetingLoc
             };
