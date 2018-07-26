@@ -63,6 +63,34 @@ namespace BbB.Library
         }
 
         /// <summary>
+        /// Adds an item to the users order. returns false if no user exists
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool AddItem(User user, OrderItem item)
+        {
+            if (!Users().Contains(user))
+                return false;
+            OrdersReal[user].Add(item);
+            return true;
+        }
+
+        /// <summary>
+        /// returns false if the user or item did not exist
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool RemoveItem(User user, OrderItem item)
+        {
+            if (!Users().Contains(user))
+                return false;
+            return OrdersReal[user].Remove(item);
+        }
+
+
+        /// <summary>
         /// True, this is a pickup
         /// </summary>
         /// <returns></returns>

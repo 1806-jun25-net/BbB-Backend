@@ -144,6 +144,8 @@ namespace BbB.Data
             {
                 entity.Property(e => e.MeetLoc).HasMaxLength(16);
 
+                entity.Property(e => e.Rating).HasColumnType("decimal(18, 0)");
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Driver)
                     .HasForeignKey(d => d.UserId)
@@ -283,11 +285,11 @@ namespace BbB.Data
             modelBuilder.Entity<Usr>(entity =>
             {
                 entity.HasIndex(e => e.EmailAddress)
-                    .HasName("UQ__Usr__49A147403A481E82")
+                    .HasName("UQ__Usr__49A1474090295A25")
                     .IsUnique();
 
                 entity.HasIndex(e => e.UserName)
-                    .HasName("UQ__Usr__C9F28456B3CD76E2")
+                    .HasName("UQ__Usr__C9F284568CDB8FF3")
                     .IsUnique();
 
                 entity.Property(e => e.Company).HasMaxLength(20);
@@ -301,6 +303,8 @@ namespace BbB.Data
                 entity.Property(e => e.Pass)
                     .IsRequired()
                     .HasMaxLength(32);
+
+                entity.Property(e => e.Rating).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.UserName)
                     .IsRequired()

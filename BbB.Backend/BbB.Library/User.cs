@@ -18,6 +18,10 @@ namespace BbB.Library
         /// Username
         /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Password
+        /// </summary>
+        public string Pass { get; set; }
 
         /// <summary>
         /// Email Address

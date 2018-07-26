@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BbB.Library
 {
-    public class Join : Drive
+    public class JoinDrive : Drive
     {
         
         private List<User> UsersReal;
@@ -18,7 +18,7 @@ namespace BbB.Library
         /// <param name="dest"></param>
         /// <param name="time"></param>
         /// <param name="id"></param>
-        public Join(Driver driver, Destination dest, DateTime time, int id = -1):
+        public JoinDrive(Driver driver, Destination dest, DateTime time, int id = -1):
             base(driver, dest, time, id)
         {
             UsersReal = null;

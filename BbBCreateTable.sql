@@ -5,6 +5,7 @@ EmailAddress NVarChar(30) Unique Not Null,
 Pass NVarChar(32) Not Null,
 Company NVarChar(20),
 Credit Decimal Not Null,
+Rating Decimal Not Null,
 Constraint PK_Usr Primary Key (Id));
 
 Create Table Destination (
@@ -18,6 +19,7 @@ Id Int Identity Not Null,
 UserId Int Not Null,
 Seats Int,
 MeetLoc NVarChar(16),
+Rating Decimal,
 Constraint PK_Driver Primary Key (Id),
 Constraint FK_Driver Foreign Key (UserId) References Usr (Id));
 

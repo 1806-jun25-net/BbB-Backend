@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 namespace BbB.Library
 {
     /// <summary>
-    /// Simple compound of string and decimal
+    /// Simple compound of string and decimal, with Id for database
     /// </summary>
     public class MenuItem
     {
+        public int Id { get; }
         public string Name {get;}
         public decimal Cost { get; set; }
-        public MenuItem(string name, decimal cost)
+        public MenuItem(string name, decimal cost, int Id = -1)
         {
             Cost = cost;
             Name = name;

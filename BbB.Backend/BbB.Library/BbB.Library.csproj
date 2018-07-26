@@ -141,7 +141,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArchiveItem.cs" />
     <Compile Include="DataRepository.cs" />
     <Compile Include="Destination.cs" />
     <Compile Include="JoinDrive.cs" />
