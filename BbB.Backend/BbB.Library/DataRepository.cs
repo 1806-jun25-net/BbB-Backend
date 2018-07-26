@@ -16,17 +16,23 @@ namespace BbB.Library
             bbBContext = input ?? throw new ArgumentException(nameof(input));
         }
 
-        public List<Drive> GetDrives(string Company)
+        public User GetUsrs()
         {
-            return Mapper.Map(bbBContext.Drive.Include(d => d.Destination)
-                .Include(dr => dr.Driver).Include(u => u.UserJoin).AsNoTracking().ToList());
+            Usr usrs = bbBContext.Usr.AsNoTracking().First();
+            return Mapper.Map(usrs);
         }
 
-        public List<Destination> GetDestinations()
-        {
-            return Mapper.Map(bbBContext.Destination.Include(m => m.MenuItem)
-                .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().ToList());
-        }
+        //public List<Drive> GetDrives(string Company)
+        //{
+        //    return Mapper.Map(bbBContext.Drive.Include(d => d.Destination)
+        //        .Include(dr => dr.Driver).Include(u => u.UserJoin).AsNoTracking().ToList());
+        //}
+
+        //public List<Destination> GetDestinations()
+        //{
+        //    return Mapper.Map(bbBContext.Destination.Include(m => m.MenuItem)
+        //        .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().ToList());
+        //}
 
         public List<Message> GetMsgFrom()
         {
@@ -52,11 +58,11 @@ namespace BbB.Library
                 .Include(u => u.UserId).AsNoTracking().ToList();
         }
 
-        public List<MenuItem> GetMenuItems(int destId)
-        {
-            //return
+        //public List<MenuItem> GetMenuItems(int destId)
+        //{
+        //    //return
 
-        }
+        //}
 
         public bool VerifyLogin(string username, string pass)
         {
