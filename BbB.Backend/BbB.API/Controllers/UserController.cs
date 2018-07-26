@@ -25,14 +25,14 @@ namespace BbB.API.Controllers
         [HttpGet]
         public IEnumerable<User> Get()
         {
-
-            //return ;
+            return data.GetUsers();
         }
 
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IEnumerable<User> Get(int id)
         {
-            return "value";
+            IEnumerable<User> lookup = data.GetUsers().Where(x => x.Id == id);
+            return lookup;
         }
         
         [HttpPost]
