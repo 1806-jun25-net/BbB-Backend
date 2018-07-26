@@ -37,6 +37,16 @@ namespace BbB.Library
         }
 
         /// <summary>
+        /// Retrieves the orders for the given user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public List<OrderItem> OrderForUser(User user)
+        {
+            return OrdersReal[user].ToList();
+        }
+
+        /// <summary>
         /// Adds a user to the drive. False if already present or full
         /// </summary>
         /// <param name="user"></param>
@@ -63,7 +73,7 @@ namespace BbB.Library
         }
 
         /// <summary>
-        /// Adds an item to the users order. returns false if no user exists
+        /// Adds an item to the users order. updates the item qty if already exists. false if no user
         /// </summary>
         /// <param name="user"></param>
         /// <param name="item"></param>
@@ -72,6 +82,14 @@ namespace BbB.Library
         {
             if (!Users().Contains(user))
                 return false;
+            foreach(OrderItem i in OrdersReal[user])
+            {
+                if (i.Equals(item))
+                {
+                    i.Quantity += item.Quantity;
+                    return true;
+                }
+            }
             OrdersReal[user].Add(item);
             return true;
         }

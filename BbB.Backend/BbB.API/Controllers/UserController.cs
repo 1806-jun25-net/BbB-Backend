@@ -25,7 +25,8 @@ namespace BbB.API.Controllers
         [HttpGet]
         public IEnumerable<User> Get()
         {
-            return data.GetUsers();
+
+            //return ;
         }
 
         [HttpGet("{id}")]

@@ -19,5 +19,10 @@ namespace BbB.Library
             Cost = cost;
             Name = name;
         }
+
+        public bool Equals(MenuItem other)
+        {
+            return (Cost == other.Cost && Name == other.Name);
+        }
     }
 }

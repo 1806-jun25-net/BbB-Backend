@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BbB.Test
 {
-    public class TestLibrary
+    public class DestinationTests
     {
         [Fact]
         public void TestArchiveItem()
