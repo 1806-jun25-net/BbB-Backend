@@ -31,8 +31,13 @@ namespace BbB.Data
         public virtual DbSet<UserReview> UserReview { get; set; }
         public virtual DbSet<Usr> Usr { get; set; }
 
+        /// <summary>
+        /// empty scaffolded
+        /// </summary>
+        /// <param name="optionsBuilder"></param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //empty scaffolded
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
