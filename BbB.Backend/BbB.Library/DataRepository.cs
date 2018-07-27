@@ -6,6 +6,7 @@ using System.Text;
 using BbB.Data;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace BbB.Library
 {
@@ -18,53 +19,53 @@ namespace BbB.Library
             bbBContext = input ?? throw new ArgumentException(nameof(input));
         }
 
-        public IEnumerable<User> GetUsers()
+        public async Task<IEnumerable<User>> GetUsers()
         {
-            return Mapper.Map(bbBContext.Usr.AsNoTracking().ToList());
+            return Mapper.Map(await bbBContext.Usr.AsNoTracking().ToListAsync());
         }
 
-        public IEnumerable<Drive> GetDrives(string Company)
+        public async Task<IEnumerable<Drive>> GetDrives(string Company)
         {
-            return Mapper.Map(bbBContext.Drive.Include(d => d.Destination)
-                .Include(dr => dr.Driver).Include(u => u.UserJoin).AsNoTracking().ToList());
+            return Mapper.Map(await bbBContext.Drive.Include(d => d.Destination)
+                .Include(dr => dr.Driver).Include(u => u.UserJoin).AsNoTracking().ToListAsync());
         }
 
-        public IEnumerable<Destination> GetDestinations()
+        public async Task<IEnumerable<Destination>> GetDestinations()
         {
-            return Mapper.Map(bbBContext.Destination.Include(m => m.MenuItem)
-                .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().ToList());
+            return Mapper.Map(await bbBContext.Destination.Include(m => m.MenuItem)
+                .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().ToListAsync());
         }
 
-        public IEnumerable<Message> GetMsgFrom(int userId)
+        public async Task<IEnumerable<Message>> GetMsgFrom(int userId)
         {
-            return Mapper.Map(bbBContext.Msg.Where(m => m.SenderId == userId).AsNoTracking().ToList());
+            return Mapper.Map(await bbBContext.Msg.Where(m => m.SenderId == userId).AsNoTracking().ToListAsync());
         }
 
-        public IEnumerable<Message> GetMsgTo(int userId)
+        public async Task<IEnumerable<Message>> GetMsgTo(int userId)
         {
-            return Mapper.Map(bbBContext.Msg.Where(m => m.ReceiverId == userId).AsNoTracking().ToList());
+            return Mapper.Map(await bbBContext.Msg.Where(m => m.ReceiverId == userId).AsNoTracking().ToListAsync());
         }
 
-        public List<UserReview> GetUserReviews()
+        public async Task<IEnumerable<UserReview>> GetUserReviews()
         {
-            return bbBContext.UserReview.Include(d => d.DriverId)
-                .Include(u => u.UserId).AsNoTracking().ToList();
+            return await bbBContext.UserReview.Include(d => d.DriverId)
+                .Include(u => u.UserId).AsNoTracking().ToListAsync();
         }
 
-        public List<DriverReview> GetDriverReviews()
+        public async Task<IEnumerable<DriverReview>> GetDriverReviews()
         {
-            return bbBContext.DriverReview.Include(d => d.DriverId)
-                .Include(u => u.UserId).AsNoTracking().ToList();
+            return await bbBContext.DriverReview.Include(d => d.DriverId)
+                .Include(u => u.UserId).AsNoTracking().ToListAsync();
         }
 
-        public IEnumerable<MenuItem> GetMenuItems(int destId)
+        public async Task<IEnumerable<MenuItem>> GetMenuItems(int destId)
         {
-            return Mapper.Map(bbBContext.MenuItem.Where(i => i.DestinationId == destId).AsNoTracking().ToList());
+            return Mapper.Map(await bbBContext.MenuItem.Where(i => i.DestinationId == destId).AsNoTracking().ToListAsync());
         }
 
-        public bool VerifyLogin(string username, string pass)
+        public async Task<bool> VerifyLogin(string username, string pass)
         {
-            List<Usr> usrs = bbBContext.Usr.AsNoTracking().ToList();
+            List<Usr> usrs = await bbBContext.Usr.AsNoTracking().ToListAsync();
 
             foreach (var item in usrs)
             {
@@ -76,9 +77,18 @@ namespace BbB.Library
             return false;
         }
 
-        public bool CheckUserName(string name)
+        public async Task<User> GetUser(int id)
         {
-            List<Usr> usrs = bbBContext.Usr.AsNoTracking().ToList();
+            var list = await bbBContext.Usr.Where(u => u.Id == id).ToListAsync();
+            if (list.Any())
+                return Mapper.Map(list.First());
+            else
+                return null;
+        }
+
+        public async Task<bool> CheckUserName(string name)
+        {
+            List<Usr> usrs = await bbBContext.Usr.AsNoTracking().ToListAsync();
 
             foreach (var item in usrs)
             {
@@ -90,9 +100,9 @@ namespace BbB.Library
             return true;
         }
 
-        public int? LookupUserId(string name)
+        public async Task<int?> LookupUserId(string name)
         {
-            List<Usr> usrs = bbBContext.Usr.AsTracking().ToList();
+            List<Usr> usrs = await bbBContext.Usr.AsTracking().ToListAsync();
 
             foreach (var item in usrs)
             {
@@ -104,9 +114,9 @@ namespace BbB.Library
             return null; // method that calls this should check for null, which means the user was not found
         }
 
-        public int? LookupDestinationId(string name)
+        public async Task<int?> LookupDestinationId(string name)
         {
-            List<Data.Destination> destinations = bbBContext.Destination.AsTracking().ToList();
+            List<Data.Destination> destinations = await bbBContext.Destination.AsTracking().ToListAsync();
 
             foreach (var item in destinations)
             {
@@ -118,7 +128,7 @@ namespace BbB.Library
             return null; // method that calls this should check for null, which means the location was not found
         }
 
-        public void AddUser(string name, string email, string pass, string company)
+        public async Task AddUser(string name, string email, string pass, string company)
         {
             var usr = new Usr
             {
@@ -131,7 +141,7 @@ namespace BbB.Library
             try
             {
                 bbBContext.Add(usr);
-                bbBContext.SaveChanges();
+                await bbBContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -139,14 +149,14 @@ namespace BbB.Library
             }
         }
 
-        public void AddUserCredit(int id, decimal credit)
+        public async Task AddUserCredit(int id, decimal credit)
         {
-            Usr lookup = bbBContext.Usr.Where(x => x.Id == id).First();
+            Usr lookup = await bbBContext.Usr.Where(x => x.Id == id).FirstAsync();
             lookup.Credit += credit;
 
             try
             {
-                bbBContext.SaveChanges();
+                await bbBContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -154,14 +164,14 @@ namespace BbB.Library
             }
         }
 
-        public void RemoveUserCredit(int id, decimal credit)
+        public async Task RemoveUserCredit(int id, decimal credit)
         {
-            Usr lookup = bbBContext.Usr.Where(x => x.Id == id).First();
+            Usr lookup = await bbBContext.Usr.Where(x => x.Id == id).FirstAsync();
             lookup.Credit -= credit;
 
             try
             {
-                bbBContext.SaveChanges();
+                await bbBContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -170,7 +180,7 @@ namespace BbB.Library
         }
 
         
-        public void AddDriver(int driverId, int seats, string meetingLoc)
+        public async Task AddDriver(int driverId, int seats, string meetingLoc)
         {
             var driver = new Driver
             {
@@ -182,7 +192,7 @@ namespace BbB.Library
             try
             {
                 bbBContext.Add(driver);
-                bbBContext.SaveChanges();
+                await bbBContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -190,7 +200,7 @@ namespace BbB.Library
             }
         }
 
-        public void AddArchiveDrive(int driverId, int destinationId, string dtype, DateTime dtime)
+        public async Task AddArchiveDrive(int driverId, int destinationId, string dtype, DateTime dtime)
         {
             var archiveDrive = new ArchiveDrive
             {
@@ -203,7 +213,27 @@ namespace BbB.Library
             try
             {
                 bbBContext.Add(archiveDrive);
-                bbBContext.SaveChanges();
+                await bbBContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task AddMessage(int from, int to, string content)
+        {
+            var msg = new Msg
+            {
+                ReceiverId = to,
+                SenderId = from,
+                Msg1 = content
+            };
+
+            try
+            {
+                bbBContext.Add(msg);
+                await bbBContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
