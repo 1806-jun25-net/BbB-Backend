@@ -44,12 +44,23 @@ namespace BbB.API.Controllers
         /// <summary>
         /// Returns a destination based on the title provided 
         /// </summary>
-        /// <param title="title"></param>
+        /// <param name="title"></param>
         /// <returns></returns>
         [HttpGet("{title}")]
         public async Task<ActionResult<Library.Destination>> Get(string title)
         {
             return Ok(await data.GetDestinationByTitle(title));
+        }
+
+        /// <summary>
+        /// Get the menu items of a destination
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Library.MenuItem>> GetMenu(int id)
+        {
+            return Ok(await data.GetMenuItems(id));
         }
     }
 }
