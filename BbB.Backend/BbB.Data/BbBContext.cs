@@ -33,9 +33,6 @@ namespace BbB.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
