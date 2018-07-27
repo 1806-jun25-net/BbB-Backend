@@ -6,6 +6,7 @@ using System.Text;
 using BbB.Data;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace BbB.Library
 {
@@ -35,14 +36,14 @@ namespace BbB.Library
                 .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().ToList());
         }
 
-        public IEnumerable<Message> GetMsgFrom(int userId)
+        public async Task<IEnumerable<Message>> GetMsgFrom(int userId)
         {
-            return Mapper.Map(bbBContext.Msg.Where(m => m.SenderId == userId).AsNoTracking().ToList());
+            return Mapper.Map(await bbBContext.Msg.Where(m => m.SenderId == userId).AsNoTracking().ToListAsync());
         }
 
-        public IEnumerable<Message> GetMsgTo(int userId)
+        public async Task<IEnumerable<Message>> GetMsgTo(int userId)
         {
-            return Mapper.Map(bbBContext.Msg.Where(m => m.ReceiverId == userId).AsNoTracking().ToList());
+            return Mapper.Map(await bbBContext.Msg.Where(m => m.ReceiverId == userId).AsNoTracking().ToListAsync());
         }
 
         public List<UserReview> GetUserReviews()
@@ -74,6 +75,15 @@ namespace BbB.Library
                 }
             }
             return true;
+        }
+
+        public User GetUser(int id)
+        {
+            var list = bbBContext.Usr.Where(u => u.Id == id).ToList();
+            if (list.Any())
+                return Mapper.Map(list.First());
+            else
+                return null;
         }
 
         public bool CheckUserName(string name)
@@ -209,6 +219,11 @@ namespace BbB.Library
             {
                 throw;
             }
+        }
+
+        public bool AddMessage(int from, int to, string content)
+        {
+            
         }
     }
 }
