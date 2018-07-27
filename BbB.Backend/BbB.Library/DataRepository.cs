@@ -24,16 +24,21 @@ namespace BbB.Library
             return Mapper.Map(await bbBContext.Usr.AsNoTracking().ToListAsync());
         }
 
-        public async Task<IEnumerable<Drive>> GetDrives(string Company)
+        public async Task<IEnumerable<Drive>> GetDrives(string company)
         {
             return Mapper.Map(await bbBContext.Drive.Include(d => d.Destination)
-                .Include(dr => dr.Driver).Include(u => u.UserJoin).AsNoTracking().ToListAsync());
+                .Include(dr => dr.Driver).Include(u => u.UserJoin).Where(x => x.Driver.User.Company == company).AsNoTracking().ToListAsync());
         }
 
         public async Task<IEnumerable<Destination>> GetDestinations()
         {
             return Mapper.Map(await bbBContext.Destination.Include(m => m.MenuItem)
                 .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().ToListAsync());
+        }
+
+        public async Task<Destination> GetDestinationById(int id)
+        {
+            return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Id == id));
         }
 
         public async Task<IEnumerable<Message>> GetMsgFrom(int userId)
