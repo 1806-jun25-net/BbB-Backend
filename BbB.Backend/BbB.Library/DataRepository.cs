@@ -41,6 +41,11 @@ namespace BbB.Library
             return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Id == id));
         }
 
+        public async Task<Destination> GetDestinationByName(string title)
+        {
+            return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Title == title));
+        }
+
         public async Task<IEnumerable<Message>> GetMsgFrom(int userId)
         {
             return Mapper.Map(await bbBContext.Msg.Where(m => m.SenderId == userId).AsNoTracking().ToListAsync());
