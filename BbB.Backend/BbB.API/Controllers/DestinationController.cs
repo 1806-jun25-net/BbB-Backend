@@ -19,23 +19,37 @@ namespace BbB.API.Controllers
         {
             data = repository;
         }
-        
+
+        /// <summary>
+        /// Returns the list of destinations available
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<List<Library.Destination>>> Get()
         {
             return Ok(await data.GetDestinations());
         }
 
+        /// <summary>
+        /// Returns a destination based in the id provided
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Library.Destination>> Get(int id)
         {
             return Ok(await data.GetDestinationById(id));
         }
 
-        [HttpGet("{name}")]
-        public async Task<ActionResult<Library.Destination>> Get(string name)
+        /// <summary>
+        /// Returns a destination based on the title provided 
+        /// </summary>
+        /// <param title="title"></param>
+        /// <returns></returns>
+        [HttpGet("{title}")]
+        public async Task<ActionResult<Library.Destination>> Get(string title)
         {
-            return Ok(await data.GetDestinationByName(name));
+            return Ok(await data.GetDestinationByTitle(title));
         }
     }
 }

@@ -59,14 +59,13 @@ namespace BbB.Library
         {
             return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Id == id));
         }
-
         /// <summary>
         /// Destination with the given name.
         /// <para>Returns null if not found.</para>
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
-        public async Task<Destination> GetDestinationByName(string title)
+        public async Task<Destination> GetDestinationByTitle(string title)
         {
             return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Title == title));
         }
