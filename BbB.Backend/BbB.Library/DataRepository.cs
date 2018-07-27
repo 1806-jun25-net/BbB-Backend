@@ -70,10 +70,10 @@ namespace BbB.Library
             {
                 if (item.UserName == username && item.Pass == pass)
                 {
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
 
         public bool CheckUserName(string name)
