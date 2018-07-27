@@ -40,7 +40,8 @@ namespace BbB.Library
         {
             return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Id == id));
         }
-        public async Task<Destination> GetDestinationByName(string title)
+
+        public async Task<Destination> GetDestinationByTitle(string title)
         {
             return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Title == title));
         }
