@@ -42,7 +42,7 @@ namespace BbB.API.Controllers
         }
 
         /// <summary>
-        /// Returns a destination based on the title provided 
+        /// Returns a destination based on the title provided.
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
