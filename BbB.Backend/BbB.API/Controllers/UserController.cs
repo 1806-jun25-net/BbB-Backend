@@ -26,15 +26,15 @@ namespace BbB.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<User> Get()
+        public Task<IEnumerable<User>> Get()
         {
             return data.GetUsers();
         }
 
-        [HttpGet("{id}:{name}")]
-        public async Task<ActionResult<User>> Get(int id, string name)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> Get(int id)
         {
-            User lookup = (User)data.GetUsers().Where(x => x.Id == id && x.Name == name);
+            User lookup = await data.GetUser(id);
             if (lookup == null)
             {
                 return NoContent();
@@ -43,15 +43,15 @@ namespace BbB.API.Controllers
         }
         
         [HttpPost]
-        public void Post(string name, string email, string pass, string company)
+        public async void Post(string name, string email, string pass, string company)
         {
-            data.AddUser(name, email, pass, company);
+            await data.AddUser(name, email, pass, company);
         }
         
         [HttpPut("{id}")]
         public void Put(int id, string pass, string company)
         {
-            IEnumerable<User> result = data.GetUsers().Where(i => i.Id == id);
+            //IEnumerable<User> result = data.GetUsers().Where(i => i.Id == id);
         }
         
         [HttpDelete("{id}")]

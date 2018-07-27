@@ -33,7 +33,7 @@ namespace BbB.API.Controllers
         }
 
         //[HttpGet("{id:home}")]
-        [HttpPost("{from:to:content}")]
+        [HttpPost("{from}:{to}:{content}")]
         public async Task<IActionResult> Post(int from, int to, string content)
         {
             return null;
