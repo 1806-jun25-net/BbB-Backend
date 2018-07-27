@@ -19,27 +19,53 @@ namespace BbB.Library
             bbBContext = input ?? throw new ArgumentException(nameof(input));
         }
 
+        /// <summary>
+        /// All Users ever
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<User>> GetUsers()
         {
             return Mapper.Map(await bbBContext.Usr.AsNoTracking().ToListAsync());
         }
 
+        /// <summary>
+        /// All active drives from a driver at the given company.
+        /// </summary>
+        /// <param name="company"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Drive>> GetDrives(string company)
         {
             return Mapper.Map(await bbBContext.Drive.Include(d => d.Destination)
                 .Include(dr => dr.Driver).Include(u => u.UserJoin).Where(x => x.Driver.User.Company == company).AsNoTracking().ToListAsync());
         }
 
+        /// <summary>
+        /// All known destinations
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<Destination>> GetDestinations()
         {
             return Mapper.Map(await bbBContext.Destination.Include(m => m.MenuItem)
                 .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().ToListAsync());
         }
 
+        /// <summary>
+        /// Destination with the given id.
+        /// <para>Returns null if not found.</para>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<Destination> GetDestinationById(int id)
         {
             return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Id == id));
         }
+
+        /// <summary>
+        /// Destination with the given name.
+        /// <para>Returns null if not found.</para>
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
         public async Task<Destination> GetDestinationByName(string title)
         {
             return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Title == title));
@@ -83,23 +109,36 @@ namespace BbB.Library
                 return null;
         }
 
+        /// <summary>
+        /// All user reviews
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<UserReview>> GetUserReviews()
         {
             return await bbBContext.UserReview.Include(d => d.DriverId)
                 .Include(u => u.UserId).AsNoTracking().ToListAsync();
         }
 
+        /// <summary>
+        /// All driver reviews
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<DriverReview>> GetDriverReviews()
         {
             return await bbBContext.DriverReview.Include(d => d.DriverId)
                 .Include(u => u.UserId).AsNoTracking().ToListAsync();
         }
 
+        /// <summary>
+        /// Returns all Menu Items from the given destination.
+        /// </summary>
+        /// <param name="destId"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<MenuItem>> GetMenuItems(int destId)
         {
             return Mapper.Map(await bbBContext.MenuItem.Where(i => i.DestinationId == destId).AsNoTracking().ToListAsync());
         }
-
+        
         public async Task<bool> VerifyLogin(string username, string pass)
         {
             List<Usr> usrs = await bbBContext.Usr.AsNoTracking().ToListAsync();
@@ -114,6 +153,11 @@ namespace BbB.Library
             return false;
         }
 
+        /// <summary>
+        /// Returns the user with the given id, null if not found
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<User> GetUser(int id)
         {
             var list = await bbBContext.Usr.Where(u => u.Id == id).ToListAsync();
@@ -123,6 +167,11 @@ namespace BbB.Library
                 return null;
         }
 
+        /// <summary>
+        /// True if username is available, false if taken
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<bool> CheckUserName(string name)
         {
             List<Usr> usrs = await bbBContext.Usr.AsNoTracking().ToListAsync();
@@ -137,6 +186,11 @@ namespace BbB.Library
             return true;
         }
 
+        /// <summary>
+        /// Returns the id for the user with the given name. null if not found
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<int?> LookupUserId(string name)
         {
             List<Usr> usrs = await bbBContext.Usr.AsTracking().ToListAsync();
@@ -151,6 +205,11 @@ namespace BbB.Library
             return null; // method that calls this should check for null, which means the user was not found
         }
 
+        /// <summary>
+        /// Returns the destination id for the given location name. null if not found.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<int?> LookupDestinationId(string name)
         {
             List<Data.Destination> destinations = await bbBContext.Destination.AsTracking().ToListAsync();
@@ -165,6 +224,14 @@ namespace BbB.Library
             return null; // method that calls this should check for null, which means the location was not found
         }
 
+        /// <summary>
+        /// Adds a user to the database
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="email"></param>
+        /// <param name="pass"></param>
+        /// <param name="company"></param>
+        /// <returns></returns>
         public async Task AddUser(string name, string email, string pass, string company)
         {
             var usr = new Usr
@@ -186,6 +253,12 @@ namespace BbB.Library
             }
         }
 
+        /// <summary>
+        /// Adds credit to the user with given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="credit"></param>
+        /// <returns></returns>
         public async Task AddUserCredit(int id, decimal credit)
         {
             Usr lookup = await bbBContext.Usr.Where(x => x.Id == id).FirstAsync();
@@ -201,6 +274,12 @@ namespace BbB.Library
             }
         }
 
+        /// <summary>
+        /// Remove credit from the user with given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="credit"></param>
+        /// <returns></returns>
         public async Task RemoveUserCredit(int id, decimal credit)
         {
             Usr lookup = await bbBContext.Usr.Where(x => x.Id == id).FirstAsync();
@@ -215,13 +294,21 @@ namespace BbB.Library
                 throw;
             }
         }
-
         
-        public async Task AddDriver(int driverId, int seats, string meetingLoc)
+        /// <summary>
+        /// Adds driver settings to the database for an existing user. does not check user exists
+        /// </summary>
+        /// <param name="driverId"></param>
+        /// <param name="userId"></param>
+        /// <param name="seats"></param>
+        /// <param name="meetingLoc"></param>
+        /// <returns></returns>
+        public async Task AddDriver(int driverId, int userId, int seats, string meetingLoc)
         {
-            var driver = new Driver
+            var driver = new Data.Driver
             {
-                DriverId = driverId,
+                UserId = userId,
+                Id = driverId,
                 Seats = seats,
                 MeetLoc = meetingLoc
             };
@@ -237,6 +324,14 @@ namespace BbB.Library
             }
         }
 
+        /// <summary>
+        /// Adds the base archive drive with no orders
+        /// </summary>
+        /// <param name="driverId"></param>
+        /// <param name="destinationId"></param>
+        /// <param name="dtype"></param>
+        /// <param name="dtime"></param>
+        /// <returns></returns>
         public async Task AddArchiveDrive(int driverId, int destinationId, string dtype, DateTime dtime)
         {
             var archiveDrive = new ArchiveDrive
