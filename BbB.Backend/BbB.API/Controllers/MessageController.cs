@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BbB.API.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class MessageController : Controller
     {
         private readonly DataRepository data;
