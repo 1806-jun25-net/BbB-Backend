@@ -245,7 +245,7 @@ namespace BbB.Library
 
         public static Message Map(Data.Msg msg)
         {
-           return new Message(msg.SenderId,msg.ReceiverId, msg.Msg1, msg.Id);
+           return new Message(msg.SenderId,msg.ReceiverId, msg.Msg1, msg.Dtime.Value, msg.Id);
         }
 
         public static Data.Msg Map(Message message)

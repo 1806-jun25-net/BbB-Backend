@@ -40,17 +40,35 @@ namespace BbB.Library
         {
             return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Id == id));
         }
-
+        /// <summary>
+        /// Returns the list of mesages from the user with given userId. null if no users with given userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Message>> GetMsgFrom(int userId)
         {
+            if (await bbBContext.Usr.Where(u => u.Id == userId).AnyAsync())
+                return null;
             return Mapper.Map(await bbBContext.Msg.Where(m => m.SenderId == userId).AsNoTracking().ToListAsync());
         }
 
+        /// <summary>
+        /// Returns the list of mesages to the user with given userId. null if no users with given userId
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Message>> GetMsgTo(int userId)
         {
+            if (await bbBContext.Usr.Where(u => u.Id == userId).AnyAsync())
+                return null;
             return Mapper.Map(await bbBContext.Msg.Where(m => m.ReceiverId == userId).AsNoTracking().ToListAsync());
         }
 
+        /// <summary>
+        /// Returns the message with given id, or null if not found
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<Message> GetMsg(int id)
         {
             var msgs = await bbBContext.Msg.Where(m => m.Id == id).AsNoTracking().ToListAsync();
@@ -235,13 +253,22 @@ namespace BbB.Library
             }
         }
 
+        /// <summary>
+        /// Adds a message with given from, to, content at current Time.
+        /// Does NOT check that userIds from, to exist
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
         public async Task AddMessage(int from, int to, string content)
         {
             var msg = new Msg
             {
                 ReceiverId = to,
                 SenderId = from,
-                Msg1 = content
+                Msg1 = content,
+                Dtime = DateTime.Now
             };
 
             try
