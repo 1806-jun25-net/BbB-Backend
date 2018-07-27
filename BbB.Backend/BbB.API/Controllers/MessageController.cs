@@ -34,16 +34,9 @@ namespace BbB.API.Controllers
 
         //[HttpGet("{id:home}")]
         [HttpPost("{from:to:content}")]
-        public IActionResult Post(int from, int to, string content)
+        public async Task<IActionResult> Post(int from, int to, string content)
         {
-            if (data.AddMessage(from, to, content))
-            {
-                return StatusCode(StatusCodes.Status202Accepted);
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status400BadRequest);
-            }
+            return null;
         }
         
         [HttpPost]
