@@ -20,41 +20,74 @@ namespace BbB.API.Controllers
             data = repository;
         }
 
+        /// <summary>
+        /// Finds the message with given id.
+        /// <para> Returns OK if found, NOTFOUND if not</para>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Message>> Get(int id)
+        {
+            var msg = await data.GetMsg(id);
+            if (msg == null)
+                return NotFound();
+            else
+                return Ok(msg);
+        }
+
+        /// <summary>
+        /// Finds all messages to the user with given id.
+        /// <para>Returns OK if user exists, NOTFOUND if not</para>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<List<Message>>> GetTo(int id)
         {
-            return Ok(await data.GetMsgTo(id));
+           var msgs = await data.GetMsgTo(id);
+            if (msgs == null)
+                return NotFound();
+            else
+                return Ok(msgs);
         }
 
-
+        /// <summary>
+        /// Finds all messages from the user with given id. 
+        /// <para>Returns OK if user exists, NOTFOUND if not</para>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<List<Message>>> GetFrom(int id)
         {
-            return Ok(await data.GetMsgFrom(id));
+            var msgs = await data.GetMsgFrom(id);
+            if (msgs == null)
+                return NotFound();
+            else
+                return Ok(msgs);
         }
 
-        //[HttpGet("{id:home}")]
+        /// <summary>
+        /// Posts a message with given users from/to, and message content, at current Time.
+        /// <para>Returns NoContent if found, NotFound if not</para> 
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
         [HttpPost("{from}:{to}:{content}")]
         public async Task<IActionResult> Post(int from, int to, string content)
         {
-            return null;
-        }
-        
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-
-        }
-        
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-        
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-
+            if(await data.GetUser(from)!= null && await data.GetUser(to) != null)
+            {
+                await data.AddMessage(from, to, content);
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }
