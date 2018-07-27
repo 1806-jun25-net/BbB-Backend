@@ -46,6 +46,15 @@ namespace BbB.Library
             return Mapper.Map(await bbBContext.Msg.Where(m => m.ReceiverId == userId).AsNoTracking().ToListAsync());
         }
 
+        public async Task<Message> GetMsg(int id)
+        {
+            var msgs = await bbBContext.Msg.Where(m => m.Id == id).AsNoTracking().ToListAsync();
+            if (msgs.Any())
+                return Mapper.Map(msgs.First());
+            else
+                return null;
+        }
+
         public async Task<IEnumerable<UserReview>> GetUserReviews()
         {
             return await bbBContext.UserReview.Include(d => d.DriverId)
