@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BbB.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -42,13 +42,6 @@ namespace BbB.API.Controllers
             }
             return lookup;
         }
-
-        [HttpPost]
-        public async void Post(string name, string email, string pass, string company)
-        {
-            await data.AddUser(name, email, pass, company);
-        }
-
         [HttpPut("{id}")]
         public void Put(int id, string pass, string company)
         {
@@ -67,13 +60,13 @@ namespace BbB.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            Task<User> result = data.GetUser(id);
+            User result = await data.GetUser(id);
             context.Remove(result);
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
         public async Task<ActionResult> Login(User input)//, [FromServices] UserManager<IdentityUser> userManager)
@@ -82,11 +75,6 @@ namespace BbB.API.Controllers
             var user = new IdentityUser(input.Name);
 
             //var result = await userManager.CreateAsync(user, input.Pass);
-
-            //if (!result.Succeeded)
-            //{
-            //    return BadRequest(result);
-            //}
 
             if (verify)
             {
@@ -106,7 +94,7 @@ namespace BbB.API.Controllers
             return NoContent();
         }
 
-        [HttpPost]
+        [HttpPost("logout")]
         [ProducesResponseType(204)]
         public async Task<NoContentResult> Logout()
         {
@@ -115,7 +103,7 @@ namespace BbB.API.Controllers
             return NoContent();
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<ActionResult> Register(User input, [FromServices] UserManager<IdentityUser> userManager)

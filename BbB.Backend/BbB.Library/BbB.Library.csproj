@@ -13,5 +13,8 @@
   <ItemGroup>
     <ProjectReference Include="..\BbB.Data\BbB.Data.csproj" />
   </ItemGroup>
+  <PropertyGroup>
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
 
 </Project>
