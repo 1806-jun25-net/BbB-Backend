@@ -57,7 +57,7 @@ namespace BbB.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}/menus")]
         public async Task<ActionResult<Library.MenuItem>> GetMenu(int id)
         {
             return Ok(await data.GetMenuItems(id));

@@ -42,7 +42,7 @@ namespace BbB.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}/sent")] // *messages that the user sent to someone?
         public async Task<ActionResult<List<Message>>> GetTo(int id)
         {
            var msgs = await data.GetMsgTo(id);
@@ -58,7 +58,7 @@ namespace BbB.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}/received")] // *messages received from someone? 
         public async Task<ActionResult<List<Message>>> GetFrom(int id)
         {
             var msgs = await data.GetMsgFrom(id);
