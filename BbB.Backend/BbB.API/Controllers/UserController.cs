@@ -76,12 +76,12 @@ namespace BbB.API.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
-        public async Task<ActionResult> Login(User input, [FromServices] UserManager<IdentityUser> userManager)
+        public async Task<ActionResult> Login(User input)//, [FromServices] UserManager<IdentityUser> userManager)
         {
             bool verify = await data.VerifyLogin(input.Name, input.Pass);
             var user = new IdentityUser(input.Name);
 
-            var result = await userManager.CreateAsync(user, input.Pass);
+            //var result = await userManager.CreateAsync(user, input.Pass);
 
             //if (!result.Succeeded)
             //{
