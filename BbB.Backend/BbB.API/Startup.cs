@@ -21,8 +21,6 @@ namespace BbB.API
 {
     public class Startup
     {
-        private string connectionString = null;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,10 +34,11 @@ namespace BbB.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddScoped<DataRepository>();
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<BbBContext>();
-
-            connectionString = Configuration.GetConnectionString("BbB");
-            services.AddDbContext<BbBContext>(db => db.UseSqlServer(connectionString));
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityDbContext>();
+            
+            services.AddDbContext<BbBContext>(db => db.UseSqlServer(Configuration.GetConnectionString("BbB")));
+            services.AddDbContext<IdentityDbContext>(db => db.UseSqlServer(Configuration.GetConnectionString("BbBAuth"),
+                b => b.MigrationsAssembly("BbB.API")));
 
             services.AddSwaggerGen(c =>
             {

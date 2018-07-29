@@ -135,7 +135,9 @@ namespace BbB.Library
                 UserName = name,
                 EmailAddress = email,
                 Pass = pass,
-                Company = company
+                Company = company,
+                Credit = 0.00M,
+                Rating = 0.00M
             };
 
             try

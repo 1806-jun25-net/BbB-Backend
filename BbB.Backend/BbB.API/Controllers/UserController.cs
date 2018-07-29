@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace BbB.API.Controllers
 {
     [Route("api/[controller]/[action]")]
-    public class UserController : Controller
+    [ApiController]
+    public class UserController : ControllerBase
     {
         private readonly DataRepository data;
         private readonly BbBContext context;
@@ -41,36 +42,66 @@ namespace BbB.API.Controllers
             }
             return lookup;
         }
-        
+
         [HttpPost]
         public async void Post(string name, string email, string pass, string company)
         {
             await data.AddUser(name, email, pass, company);
         }
-        
+
         [HttpPut("{id}")]
         public void Put(int id, string pass, string company)
         {
-            //IEnumerable<User> result = data.GetUsers().Where(i => i.Id == id);
+            Task<User> result = data.GetUser(id);
+            if (pass != null)
+            {
+                result.Result.Pass = pass;
+            }
+
+            if (company != null)
+            {
+                result.Result.Company = company;
+            }
+
+            context.Update(result);
         }
-        
+
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            Task<User> result = data.GetUser(id);
+            context.Remove(result);
         }
 
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
-        public async Task<ActionResult> Login(User input)
+        public async Task<ActionResult> Login(User input, [FromServices] UserManager<IdentityUser> userManager)
         {
-            var result = await _signInManager.PasswordSignInAsync(input.Name, input.Pass,
-                isPersistent: false, lockoutOnFailure: false);
+            bool verify = await data.VerifyLogin(input.Name, input.Pass);
+            var user = new IdentityUser(input.Name);
 
-            if (!result.Succeeded)
+            var result = await userManager.CreateAsync(user, input.Pass);
+
+            //if (!result.Succeeded)
+            //{
+            //    return BadRequest(result);
+            //}
+
+            if (verify)
             {
-                return StatusCode(403); // Forbidden
+                await _signInManager.SignInAsync(user, isPersistent: false);
             }
+
+            else
+            {
+                return StatusCode(403);
+            }
+
+            //if (!signIn.Succeeded)
+            //{
+            //    return StatusCode(403); // Forbidden
+            //}
 
             return NoContent();
         }
@@ -87,9 +118,8 @@ namespace BbB.API.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public async Task<ActionResult> Register(User input,
-            [FromServices] UserManager<IdentityUser> userManager,
-            [FromServices] RoleManager<IdentityRole> roleManager, bool admin = false)
+        public async Task<ActionResult> Register(User input, [FromServices] UserManager<IdentityUser> userManager)
+            //[FromServices] RoleManager<IdentityRole> roleManager, bool admin = false) keep around if we want to implement user roles
         {
             // with an [ApiController], model state is always automatically checked
             // and return 400 if any errors.
@@ -103,23 +133,25 @@ namespace BbB.API.Controllers
                 return BadRequest(result);
             }
 
-            if (admin)
-            {
-                if (!(await roleManager.RoleExistsAsync("admin")))
-                {
-                    var adminRole = new IdentityRole("admin");
-                    result = await roleManager.CreateAsync(adminRole);
-                    if (!result.Succeeded)
-                    {
-                        return StatusCode(500, result);
-                    }
-                }
-                result = await userManager.AddToRoleAsync(user, "admin");
-                if (!result.Succeeded)
-                {
-                    return StatusCode(500, result);
-                }
-            }
+            //if (admin)
+            //{
+            //    if (!(await roleManager.RoleExistsAsync("admin")))
+            //    {
+            //        var adminRole = new IdentityRole("admin");
+            //        result = await roleManager.CreateAsync(adminRole);
+            //        if (!result.Succeeded)
+            //        {
+            //            return StatusCode(500, result);
+            //        }
+            //    }
+            //    result = await userManager.AddToRoleAsync(user, "admin");
+            //    if (!result.Succeeded)
+            //    {
+            //        return StatusCode(500, result);
+            //    }
+            //}
+
+            await data.AddUser(input.Name, input.Email, input.Pass, input.Company);
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
