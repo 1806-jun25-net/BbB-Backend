@@ -32,6 +32,7 @@ namespace BbB.Library
 
         public static Destination Map(Data.Destination dest)
         {
+            if (dest == null) return null;
             Destination d = new Destination(dest.Title, dest.Id, dest.StreetAddress);
             foreach (Data.MenuItem item in dest.MenuItem)
                 d.AddItem(Map(item));
@@ -40,6 +41,7 @@ namespace BbB.Library
 
         public static Data.Destination Map(Destination dest)
         {
+            if (dest == null) return null;
             var d = new Data.Destination();
             if (dest.Id > -1)
                 d.Id = dest.Id;
@@ -50,6 +52,7 @@ namespace BbB.Library
 
         public static Driver Map(Data.Driver driver)
         {
+            if (driver == null) return null;
             Driver d = new Driver(Map(driver.User));
             d.DriverId = driver.Id;
             d.Seats = driver.Seats.Value;
@@ -60,6 +63,7 @@ namespace BbB.Library
 
         public static Data.Driver Map(Driver driver)
         {
+            if (driver == null) return null;
             Data.Driver d = new Data.Driver();
             if (driver.Id > -1)
                 d.Id = driver.Id;
@@ -73,6 +77,7 @@ namespace BbB.Library
 
         public static User Map(Data.Usr user)
         {
+            if (user == null) return null;
             User u = new User();
             u.Company = user.Company;
             u.Credit = user.Credit;
@@ -86,6 +91,7 @@ namespace BbB.Library
 
         public static Data.Usr Map(User user)
         {
+            if (user == null) return null;
             Data.Usr u = new Data.Usr();
             if (user.Id > -1)
                 u.Id = user.Id;
@@ -99,7 +105,8 @@ namespace BbB.Library
 
         public static Drive Map(Data.Drive drive)
         {
-            if(drive.Dtype == "Pickup")//Pickup
+            if (drive == null) return null;
+            if (drive.Dtype == "Pickup")//Pickup
             {
                 var d = new PickupDrive(Map(drive.Driver), Map(drive.Destination), drive.Dtime.Value, drive.Id);
                 foreach(Data.UserPickup pickup in drive.UserPickup)//adds users and items
@@ -126,6 +133,7 @@ namespace BbB.Library
 
         public static Drive Map(Data.ArchiveDrive drive)
         {
+            if (drive== null) return null;
             if (drive.Dtype == "Pickup")//Pickup
             {
                 var d = new PickupDrive(Map(drive.Driver), Map(drive.Destination), drive.Dtime.Value, drive.Id);
@@ -153,6 +161,7 @@ namespace BbB.Library
 
         public static Data.Drive MapActive(Drive drive)
         {
+            if (drive == null) return null;
             if (drive.IsPast())
                 throw new ArgumentOutOfRangeException("drive", "Drive should be archived.");
             var d = new Data.Drive
@@ -175,6 +184,7 @@ namespace BbB.Library
         /// </summary>
         public static Data.ArchiveDrive MapArchive(Drive drive)
         {
+            if (drive == null) return null;
             var d = new Data.ArchiveDrive
             {
                 DestinationId = drive.Dest.Id,
@@ -192,11 +202,13 @@ namespace BbB.Library
 
         public static OrderItem Map(Data.OrderItem orderItem)
         {
+            if (orderItem == null) return null;
             return new OrderItem(Map(orderItem.Item), orderItem.Quantity, orderItem.Msg);
         }
 
         public static OrderItem Map(Data.ArchiveItem archiveItem)
         {
+            if (archiveItem == null) return null;
             return new OrderItem(
                 new MenuItem(archiveItem.ItemName, archiveItem.Cost.Value),
                 archiveItem.Quantity.Value, archiveItem.Msg);
@@ -204,6 +216,7 @@ namespace BbB.Library
 
         public static Data.OrderItem Map(OrderItem orderItem,int orderId)
         {
+            if (orderItem == null) return null;
             return new Data.OrderItem
             {
                 ItemId = orderItem.Item.Id,
@@ -215,6 +228,7 @@ namespace BbB.Library
 
         public static Data.ArchiveItem Map(OrderItem orderItem)
         {
+            if (orderItem == null) return null;
             return new Data.ArchiveItem
             {
                 ArchiveOrderId = 0,
@@ -229,11 +243,13 @@ namespace BbB.Library
 
         public static MenuItem Map(Data.MenuItem menuItem)
         {
+            if (menuItem == null) return null;
             return new MenuItem(menuItem.ItemName, menuItem.Cost.Value,menuItem.Id);
         }
 
         public static Data.MenuItem Map(MenuItem menuItem, int destId)
         {
+            if (menuItem == null) return null;
             return new Data.MenuItem
             {
                 Cost = menuItem.Cost,
@@ -245,11 +261,13 @@ namespace BbB.Library
 
         public static Message Map(Data.Msg msg)
         {
-           return new Message(msg.SenderId,msg.ReceiverId, msg.Msg1, msg.Id);
+            if (msg == null) return null;
+            return new Message(msg.SenderId,msg.ReceiverId, msg.Msg1, msg.Dtime.Value, msg.Id);
         }
 
         public static Data.Msg Map(Message message)
         {
+            if (message == null) return null;
             var m =new Data.Msg
             {
                 SenderId = message.FromId,
