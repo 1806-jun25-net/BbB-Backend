@@ -69,7 +69,7 @@ namespace BbB.API.Controllers
         [HttpPost("login")]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
-        public async Task<ActionResult> Login(User input)//, [FromServices] UserManager<IdentityUser> userManager)
+        public async Task<ActionResult> Login(User input)
         {
             bool verify = await data.VerifyLogin(input.Name, input.Pass);
             var user = new IdentityUser(input.Name);
@@ -86,11 +86,6 @@ namespace BbB.API.Controllers
             {
                 return StatusCode(403);
             }
-
-            //if (!signIn.Succeeded)
-            //{
-            //    return StatusCode(403); // Forbidden
-            //}
 
             return NoContent();
         }
