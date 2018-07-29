@@ -35,7 +35,7 @@ namespace BbB.API
 
             services.AddScoped<DataRepository>();
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityDbContext>();
-            
+
             services.AddDbContext<BbBContext>(db => db.UseSqlServer(Configuration.GetConnectionString("BbB")));
             services.AddDbContext<IdentityDbContext>(db => db.UseSqlServer(Configuration.GetConnectionString("BbBAuth"),
                 b => b.MigrationsAssembly("BbB.API")));
