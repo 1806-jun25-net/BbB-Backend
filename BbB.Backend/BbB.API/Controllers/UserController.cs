@@ -81,14 +81,15 @@ namespace BbB.API.Controllers
             bool verify = await data.VerifyLogin(input.Name, input.Pass);
             var user = new IdentityUser(input.Name);
 
-            var result = await userManager.CreateAsync(user, input.Pass);
-
-            if (verify)
+            if (!verify)
             {
-                await _signInManager.SignInAsync(user, isPersistent: false);
+                return StatusCode(403);
             }
 
-            else
+            var result = await _signInManager.PasswordSignInAsync(input.Name, input.Pass,
+                    isPersistent: false, lockoutOnFailure: false);
+
+            if (!result.Succeeded)
             {
                 return StatusCode(403);
             }
