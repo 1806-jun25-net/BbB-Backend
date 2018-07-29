@@ -83,11 +83,6 @@ namespace BbB.API.Controllers
 
             var result = await userManager.CreateAsync(user, input.Pass);
 
-            //if (!result.Succeeded)
-            //{
-            //    return BadRequest(result);
-            //}
-
             if (verify)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
