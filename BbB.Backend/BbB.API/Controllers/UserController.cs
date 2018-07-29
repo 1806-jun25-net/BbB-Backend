@@ -66,13 +66,6 @@ namespace BbB.API.Controllers
             context.Remove(result);
         }
 
-        [HttpPost("{name}:{email}:{pass}:{company}/post")]
-        public async Task Post(string name, string email, string pass, string company)
-        {
-            await data.AddUser(name, email, pass, company);
-        }
-
-
         [HttpPost("login")]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
