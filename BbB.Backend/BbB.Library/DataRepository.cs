@@ -65,9 +65,9 @@ namespace BbB.Library
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
-        public async Task<Destination> GetDestinationByTitle(string title)
+        public async Task<IEnumerable<Destination>> GetDestinationByTitle(string title)
         {
-            return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Title == title));
+            return Mapper.Map(await bbBContext.Destination.Where(m => m.Title == title).ToListAsync());
         }
 
         /// <summary>

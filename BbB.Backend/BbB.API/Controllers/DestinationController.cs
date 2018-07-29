@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BbB.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class DestinationController : ControllerBase
     {
@@ -46,7 +46,7 @@ namespace BbB.API.Controllers
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
-        [HttpGet("{title}")]
+        [HttpGet("{title}/name")]
         public async Task<ActionResult<Library.Destination>> GetByName(string title)
         {
             return Ok(await data.GetDestinationByTitle(title));
