@@ -46,8 +46,8 @@ namespace BbB.API.Controllers
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
-        [HttpGet("{title}")]
-        public async Task<ActionResult<Library.Destination>> Get(string title)
+        [HttpGet("{title}/name")]
+        public async Task<ActionResult<Library.Destination>> GetByName(string title)
         {
             return Ok(await data.GetDestinationByTitle(title));
         }
@@ -57,7 +57,7 @@ namespace BbB.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{id}/menu")]
         public async Task<ActionResult<Library.MenuItem>> GetMenu(int id)
         {
             return Ok(await data.GetMenuItems(id));
