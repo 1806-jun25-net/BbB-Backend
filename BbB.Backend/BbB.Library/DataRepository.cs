@@ -116,8 +116,8 @@ namespace BbB.Library
         /// <returns></returns>
         public async Task<IEnumerable<UserReview>> GetUserReviews()
         {
-            return await bbBContext.UserReview.Include(d => d.DriverId)
-                .Include(u => u.UserId).AsNoTracking().ToListAsync();
+            return await bbBContext.UserReview.Include(d => d.Driver)
+                .Include(u => u.User).AsNoTracking().ToListAsync();
         }
 
         /// <summary>
@@ -126,8 +126,8 @@ namespace BbB.Library
         /// <returns></returns>
         public async Task<IEnumerable<DriverReview>> GetDriverReviews()
         {
-            return await bbBContext.DriverReview.Include(d => d.DriverId)
-                .Include(u => u.UserId).AsNoTracking().ToListAsync();
+            return await bbBContext.DriverReview.Include(d => d.Driver)
+                .Include(u => u.User).AsNoTracking().ToListAsync();
         }
 
         /// <summary>
