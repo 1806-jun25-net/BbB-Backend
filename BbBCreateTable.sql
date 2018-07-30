@@ -4,8 +4,8 @@ UserName NVarChar(16) Unique Not Null,
 EmailAddress NVarChar(30) Unique Not Null,
 Pass NVarChar(32) Not Null,
 Company NVarChar(20),
-Credit Decimal Not Null,
-Rating Decimal Not Null,
+Credit Decimal(18,2) Not Null,
+Rating Decimal (18,12) Not Null,
 Constraint PK_Usr Primary Key (Id));
 
 Create Table Destination (
@@ -19,7 +19,7 @@ Id Int Identity Not Null,
 UserId Int Not Null,
 Seats Int,
 MeetLoc NVarChar(16),
-Rating Decimal,
+Rating Decimal (18,12),
 Constraint PK_Driver Primary Key (Id),
 Constraint FK_Driver Foreign Key (UserId) References Usr (Id));
 
@@ -47,7 +47,7 @@ Create Table MenuItem (
 Id Int Identity Not Null,
 DestinationId Int Not Null,
 ItemName NVarChar(32),
-Cost Decimal,
+Cost Decimal (18,2),
 Constraint PK_MenuItem Primary Key (Id),
 Constraint FK_DestinationId Foreign Key (DestinationId) References Destination (Id));
 
@@ -127,7 +127,19 @@ Id Int Identity Not Null,
 ArchiveOrderId Int Not Null,
 ItemName NVarChar(32),
 Quantity Int,
-Cost Decimal,
+Cost Decimal (18,2),
 Msg NVarChar(255),
 Constraint PK_ArchiveItem Primary Key (Id),
 Constraint FK_ArchiveItem Foreign Key (ArchiveOrderId) References ArchiveOrder (Id));
+
+-- alterations to fix decimal precision
+Alter table Usr
+Alter column Credit decimal(18,2);
+Alter table Usr
+Alter column Rating decimal(18,12);
+Alter table Driver
+alter column Rating decimal(18,12);
+Alter table MenuItem
+alter column cost decimal(18,2);
+Alter table ArchiveItem
+alter column cost decimal(18,2);

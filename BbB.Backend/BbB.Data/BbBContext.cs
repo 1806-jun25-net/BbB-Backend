@@ -67,7 +67,7 @@ namespace BbB.Data
 
             modelBuilder.Entity<ArchiveItem>(entity =>
             {
-                entity.Property(e => e.Cost).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Cost).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.ItemName).HasMaxLength(32);
 
@@ -146,7 +146,7 @@ namespace BbB.Data
             {
                 entity.Property(e => e.MeetLoc).HasMaxLength(16);
 
-                entity.Property(e => e.Rating).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Rating).HasColumnType("decimal(18, 12)");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Driver)
@@ -178,7 +178,7 @@ namespace BbB.Data
 
             modelBuilder.Entity<MenuItem>(entity =>
             {
-                entity.Property(e => e.Cost).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Cost).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.ItemName).HasMaxLength(32);
 
@@ -296,7 +296,7 @@ namespace BbB.Data
 
                 entity.Property(e => e.Company).HasMaxLength(20);
 
-                entity.Property(e => e.Credit).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Credit).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.EmailAddress)
                     .IsRequired()
@@ -306,7 +306,7 @@ namespace BbB.Data
                     .IsRequired()
                     .HasMaxLength(32);
 
-                entity.Property(e => e.Rating).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Rating).HasColumnType("decimal(18, 12)");
 
                 entity.Property(e => e.UserName)
                     .IsRequired()
