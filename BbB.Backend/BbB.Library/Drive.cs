@@ -33,7 +33,6 @@ namespace BbB.Library
         /// only for active orders
         /// </summary>
         public static readonly int Buffer = 30;
-        //public int Buffer { get; set; }
 
         /// <summary>
         /// Driver exectuing the drive
@@ -43,7 +42,7 @@ namespace BbB.Library
         /// <summary>
         /// A new drive, with given driver
         /// </summary>
-        public Drive(Driver driver, Destination dest, DateTime time, int id = -1)
+        protected Drive(Driver driver, Destination dest, DateTime time, int id = -1)
         {
             Driver = driver;
             Dest = dest;
