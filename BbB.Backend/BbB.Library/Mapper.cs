@@ -10,7 +10,7 @@ namespace BbB.Library
 {
     public static class Mapper
     {
-        //todo later where we actually need it
+        //to have later where we actually need it
         //public static void MapperMain()
         //{
         //    var builder = new ConfigurationBuilder()
@@ -57,7 +57,7 @@ namespace BbB.Library
             d.DriverId = driver.Id;
             d.Seats = driver.Seats.Value;
             d.MeetLoc = driver.MeetLoc;
-            //d.DriverRating = driver.Rating; TODO
+            d.DriverRating = driver.Rating.Value;
             return d;
         }
 
@@ -70,7 +70,7 @@ namespace BbB.Library
             d.Seats = driver.Seats;
             d.MeetLoc = driver.MeetLoc;
             d.UserId = driver.Id;
-            //d.Rating = driver.DriverRating; TODO
+            d.Rating = driver.DriverRating; 
             return d;
         }
 
@@ -84,7 +84,7 @@ namespace BbB.Library
             u.Email = user.EmailAddress;
             u.Id = user.Id;
             u.Name = user.UserName;
-            //u.Rating = user.Rating; TODO
+            u.Rating = user.Rating;
             u.Pass= user.Pass;
             return u;
         }
@@ -99,7 +99,7 @@ namespace BbB.Library
             u.Credit = user.Credit;
             u.EmailAddress = user.Email;
             u.Pass = user.Pass;
-            //u.Rating = user.Rating TODO
+            u.Rating = user.Rating;
             return u;
         }
 
