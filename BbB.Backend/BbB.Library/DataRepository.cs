@@ -7,12 +7,14 @@ using BbB.Data;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Threading.Tasks;
+using NLog;
 
 namespace BbB.Library
 {
     public class DataRepository
     {
         private readonly BbBContext bbBContext;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public DataRepository(BbBContext input)
         {
@@ -250,6 +252,7 @@ namespace BbB.Library
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 throw;
             }
         }
@@ -271,6 +274,7 @@ namespace BbB.Library
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 throw;
             }
         }
@@ -292,6 +296,7 @@ namespace BbB.Library
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 throw;
             }
         }
@@ -321,6 +326,7 @@ namespace BbB.Library
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 throw;
             }
         }
@@ -350,6 +356,7 @@ namespace BbB.Library
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 throw;
             }
         }
@@ -379,6 +386,7 @@ namespace BbB.Library
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 throw;
             }
         }

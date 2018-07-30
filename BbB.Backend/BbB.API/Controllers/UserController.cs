@@ -72,7 +72,6 @@ namespace BbB.API.Controllers
         public async Task<ActionResult> Login(User input)
         {
             bool verify = await data.VerifyLogin(input.Name, input.Pass);
-            var user = new IdentityUser(input.Name);
 
             if (!verify)
             {
