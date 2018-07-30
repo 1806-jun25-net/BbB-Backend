@@ -114,8 +114,8 @@ namespace BbB.Library
         /// <returns></returns>
         public async Task<IEnumerable<UserReview>> GetUserReviews()
         {
-            return await bbBContext.UserReview.Include(d => d.DriverId)
-                .Include(u => u.UserId).AsNoTracking().ToListAsync();
+            return await bbBContext.UserReview.Include(d => d.Driver)
+                .Include(u => u.User).AsNoTracking().ToListAsync();
         }
 
         /// <summary>
@@ -124,8 +124,8 @@ namespace BbB.Library
         /// <returns></returns>
         public async Task<IEnumerable<DriverReview>> GetDriverReviews()
         {
-            return await bbBContext.DriverReview.Include(d => d.DriverId)
-                .Include(u => u.UserId).AsNoTracking().ToListAsync();
+            return await bbBContext.DriverReview.Include(d => d.Driver)
+                .Include(u => u.User).AsNoTracking().ToListAsync();
         }
 
         /// <summary>
@@ -221,6 +221,16 @@ namespace BbB.Library
                 }
             }
             return null; // method that calls this should check for null, which means the location was not found
+        }
+
+        /// <summary>
+        /// Gets the driver with the given Id. returns null if not found
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Driver> GetDriver(int id)
+        {
+            return Mapper.Map(await bbBContext.Driver.Where(d => d.Id == id).Include(u=>u.User).AsNoTracking().FirstOrDefaultAsync());
         }
 
         /// <summary>
@@ -323,6 +333,37 @@ namespace BbB.Library
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Adds a new active drive. Throws an exception if wrong parameters
+        /// </summary>
+        /// <param name="driverId"></param>
+        /// <param name="destId"></param>
+        /// <param name="time"></param>
+        /// <param name="isJoin"></param>
+        /// <returns></returns>
+        public async Task<Drive> NewDrive(int driverId, int destId, DateTime time, bool isJoin)
+        {
+            Driver driver = await GetDriver(driverId);
+            Destination dest = await GetDestinationById(destId);
+            if (driver == null || dest == null || time < DateTime.Now.AddMinutes(Drive.Buffer))
+                throw new Exception("Improper drive parameters.");
+            Drive d;
+            if (isJoin)
+                d = new JoinDrive(driver, dest, time);
+            else
+                d = new PickupDrive(driver, dest, time);
+            try
+            {
+                bbBContext.Add(Mapper.MapActive(d));
+                await bbBContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            { //TODO Log
+                throw;
+            }
+            return d;
         }
 
         /// <summary>
