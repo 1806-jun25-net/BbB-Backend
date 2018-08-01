@@ -53,7 +53,7 @@ namespace BbB.Test
         public async void TestGetDrives()
         {
             string company = "Revature";
-            var actual = await repo.GetDrives(company);
+            var actual = await repo.GetDrivesByCompany(company);
             Assert.Empty(actual);
         }
         

@@ -18,7 +18,9 @@ namespace BbB.Library
         Task<IEnumerable<Destination>> GetDestinations();
         Task<Driver> GetDriver(int id);
         Task<IEnumerable<DriverReview>> GetDriverReviews();
-        Task<IEnumerable<Drive>> GetDrives(string company);
+        Task<IEnumerable<Drive>> GetDrivesByUser(int id);
+        Task<IEnumerable<Drive>> GetDrivesByDriver(int id);
+        Task<IEnumerable<Drive>> GetDrivesByCompany(string company);
         Task<IEnumerable<MenuItem>> GetMenuItems(int destId);
         Task<Message> GetMsg(int id);
         Task<IEnumerable<Message>> GetMsgFrom(int userId);
