@@ -31,14 +31,57 @@ namespace BbB.Library
         }
 
         /// <summary>
+        /// Helper method, get the full list of data.drives with all includes.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<IEnumerable<Data.Drive>> GetFullDrives()
+        {
+            return await bbBContext.Drive.Include(d => d.Driver)
+                .Include(d=>d.Driver.User)
+                .Include(d => d.Destination)
+                .Include(d => d.UserPickup)
+                .Include(d => d.UserJoin)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Active drive with given id
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Drive> GetDrive(int id)
+        {
+            return Mapper.Map((await GetFullDrives()).Where(d=>d.Id == id).FirstOrDefault());
+        }
+
+        /// <summary>
+        /// All active drives by driver with given id
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Drive>> GetDrivesByDriver(int driverId)
+        {
+            return Mapper.Map((await GetFullDrives()).Where(d => d.DriverId == driverId).ToList());
+        }
+
+        /// <summary>
+        /// All active drives by driver with given id
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Drive>> GetDrivesByUser(int userId)
+        {
+            return Mapper.Map((await GetFullDrives()).Where(
+                d=> (d.UserJoin.Where(u =>u.UserId == userId).Any() ||
+                d.UserPickup.Where(u => u.UserId == userId).Any())
+                )).ToList();
+        }
+
+        /// <summary>
         /// All active drives from a driver at the given company.
         /// </summary>
         /// <param name="company"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<Drive>> GetDrives(string company)
+        public async Task<IEnumerable<Drive>> GetDrivesByCompany(string company)
         {
-            return Mapper.Map(await bbBContext.Drive.Include(d => d.Destination)
-                .Include(dr => dr.Driver).Include(u => u.UserJoin).Where(x => x.Driver.User.Company == company).AsNoTracking().ToListAsync());
+            return Mapper.Map((await GetFullDrives()).Where(d => d.Driver.User.Company == company).ToList());
         }
 
         /// <summary>
@@ -59,7 +102,8 @@ namespace BbB.Library
         /// <returns></returns>
         public async Task<Destination> GetDestinationById(int id)
         {
-            return Mapper.Map(await bbBContext.Destination.FirstOrDefaultAsync(m => m.Id == id));
+            return Mapper.Map(await bbBContext.Destination.Include(m => m.MenuItem)
+                .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().FirstOrDefaultAsync(m => m.Id == id));
         }
         /// <summary>
         /// Destination with the given name.
@@ -69,7 +113,9 @@ namespace BbB.Library
         /// <returns></returns>
         public async Task<IEnumerable<Destination>> GetDestinationByTitle(string title)
         {
-            return Mapper.Map(await bbBContext.Destination.Where(m => m.Title == title).ToListAsync());
+            return Mapper.Map(await bbBContext.Destination.Include(m => m.MenuItem)
+                .Include(d => d.Drive).Include(a => a.ArchiveDrive).Where(m => m.Title == title)
+                .AsNoTracking().ToListAsync());
         }
 
         /// <summary>
@@ -185,6 +231,17 @@ namespace BbB.Library
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// Returns the user based on the username provided
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<User> GetUserByUsername(string username)
+        {
+            User user = Mapper.Map(await bbBContext.Usr.FirstOrDefaultAsync(x => x.UserName == username));
+            return user;
         }
 
         /// <summary>
@@ -349,14 +406,14 @@ namespace BbB.Library
         /// <param name="time"></param>
         /// <param name="isJoin"></param>
         /// <returns></returns>
-        public async Task<Drive> NewDrive(int driverId, int destId, DateTime time, bool isJoin)
+        public async Task<Drive> NewDrive(int driverId, int destId, DateTime time, bool isPickup)
         {
             Driver driver = await GetDriver(driverId);
             Destination dest = await GetDestinationById(destId);
             if (driver == null || dest == null || time < DateTime.Now.AddMinutes(Drive.Buffer))
                 throw new Exception("Improper drive parameters.");
             Drive d;
-            if (isJoin)
+            if (!isPickup)
                 d = new JoinDrive(driver, dest, time);
             else
                 d = new PickupDrive(driver, dest, time);
@@ -370,6 +427,15 @@ namespace BbB.Library
                 throw;
             }
             return d;
+        }
+
+        public async Task<Drive> NewDrive(Drive drive)
+        {
+            try { return await NewDrive(drive.Driver.Id, drive.Dest.Id, drive.Time, drive.IsPickup()); }
+            catch (Exception ex)
+            {//TODO log 
+                throw;
+            }
         }
 
         /// <summary>

@@ -32,16 +32,17 @@ namespace BbB.API.Controllers
             return data.GetUsers();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(int id)
+        [HttpGet("{userName}")]
+        public async Task<ActionResult<User>> Get(string userName)
         {
-            User lookup = await data.GetUser(id);
-            if (lookup == null)
+            User user = await data.GetUserByUsername(userName);
+            if (user == null)
             {
                 return NoContent();
             }
-            return lookup;
+            return user;
         }
+
         [HttpPut("{id}")]
         public void Put(int id, string pass, string company)
         {
