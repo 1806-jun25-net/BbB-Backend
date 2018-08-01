@@ -234,6 +234,17 @@ namespace BbB.Library
         }
 
         /// <summary>
+        /// Returns the user based on the username provided
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<User> GetUserByUsername(string username)
+        {
+            User user = Mapper.Map(await bbBContext.Usr.FirstOrDefaultAsync(x => x.UserName == username));
+            return user;
+        }
+
+        /// <summary>
         /// Returns the id for the user with the given name. null if not found
         /// </summary>
         /// <param name="name"></param>
