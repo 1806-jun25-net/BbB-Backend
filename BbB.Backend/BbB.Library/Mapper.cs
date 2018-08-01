@@ -85,7 +85,7 @@ namespace BbB.Library
             u.Id = user.Id;
             u.Name = user.UserName;
             u.Rating = user.Rating;
-            u.Pass= user.Pass;
+            u.Pass = user.Pass;
             return u;
         }
 
@@ -133,7 +133,7 @@ namespace BbB.Library
 
         public static Drive Map(Data.ArchiveDrive drive)
         {
-            if (drive== null) return null;
+            if (drive == null) return null;
             if (drive.Dtype == "Pickup")//Pickup
             {
                 var d = new PickupDrive(Map(drive.Driver), Map(drive.Destination), drive.Dtime.Value, drive.Id);
@@ -214,7 +214,7 @@ namespace BbB.Library
                 archiveItem.Quantity.Value, archiveItem.Msg);
         }
 
-        public static Data.OrderItem Map(OrderItem orderItem,int orderId)
+        public static Data.OrderItem Map(OrderItem orderItem, int orderId)
         {
             if (orderItem == null) return null;
             return new Data.OrderItem
@@ -244,7 +244,7 @@ namespace BbB.Library
         public static MenuItem Map(Data.MenuItem menuItem)
         {
             if (menuItem == null) return null;
-            return new MenuItem(menuItem.ItemName, menuItem.Cost.Value,menuItem.Id);
+            return new MenuItem(menuItem.ItemName, menuItem.Cost.Value, menuItem.Id);
         }
 
         public static Data.MenuItem Map(MenuItem menuItem, int destId)
@@ -262,17 +262,18 @@ namespace BbB.Library
         public static Message Map(Data.Msg msg)
         {
             if (msg == null) return null;
-            return new Message(msg.SenderId,msg.ReceiverId, msg.Msg1, msg.Dtime.Value, msg.Id);
+            return new Message(msg.SenderId, msg.ReceiverId, msg.Msg1, msg.Dtime.Value, msg.Id);
         }
 
         public static Data.Msg Map(Message message)
         {
             if (message == null) return null;
-            var m =new Data.Msg
+            var m = new Data.Msg
             {
                 SenderId = message.FromId,
                 ReceiverId = message.ToId,
-                Msg1 = message.Content
+                Msg1 = message.Content,
+                Dtime = message.Time
             };
             if (message.Id > -1)
                 m.Id = message.Id;
