@@ -530,7 +530,7 @@ namespace BbB.Library
 
         public async Task<Drive> NewDrive(Drive drive)
         {
-            try { return await NewDrive(drive.Driver.Id, drive.Dest.Id, drive.Time, drive.IsPickup()); }
+            try { return await NewDrive(drive.Driver.Id, drive.Dest.Id, drive.Time, drive.IsPickup); }
             catch (Exception ex)
             {//TODO log 
                 throw;

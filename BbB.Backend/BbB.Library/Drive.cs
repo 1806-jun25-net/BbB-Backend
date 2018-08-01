@@ -8,6 +8,13 @@ namespace BbB.Library
 {
     public abstract class Drive
     {
+
+        public static readonly int MAX_PICKUP_SIZE = 12;
+
+        protected Dictionary<User, List<OrderItem>> OrdersReal;
+
+        protected List<User> UsersReal;
+
         /// <summary>
         /// internal Id. -1 if untracked by database
         /// </summary>
@@ -21,7 +28,7 @@ namespace BbB.Library
         /// <summary>
         /// True if pickup, false if join
         /// </summary>
-        public abstract bool IsPickup();
+        public bool IsPickup { get; set; }
         
         /// <summary>
         /// Time the order was placed or will occur
@@ -44,6 +51,8 @@ namespace BbB.Library
         /// </summary>
         protected Drive(Driver driver, Destination dest, DateTime time, int id = -1)
         {
+            OrdersReal = null;
+            UsersReal = null;
             Driver = driver;
             Dest = dest;
             Time = time;

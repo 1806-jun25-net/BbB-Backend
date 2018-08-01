@@ -170,7 +170,7 @@ namespace BbB.Library
                 DriverId = drive.Driver.DriverId,
                 Dtime = drive.Time
             };
-            if (drive.IsPickup())
+            if (drive.IsPickup)
                 d.Dtype = "Pickup";
             else
                 d.Dtype = "Join";
@@ -191,7 +191,7 @@ namespace BbB.Library
                 DriverId = drive.Driver.DriverId,
                 Dtime = drive.Time
             };
-            if (drive.IsPickup())
+            if (drive.IsPickup)
                 d.Dtype = "Pickup";
             else
                 d.Dtype = "Join";
