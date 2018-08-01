@@ -122,8 +122,7 @@ namespace BbB.Library
             {
                 await Archive();
             }
-
-            return await bbBContext.Drive
+            var drives = await bbBContext.Drive
                 .Include(d => d.Driver)
                 .Include(d=>d.Driver.User)
                 .Include(d => d.Destination)
@@ -131,6 +130,24 @@ namespace BbB.Library
                 .Include(d => d.UserJoin)
                 .AsNoTracking()
                 .ToListAsync();
+            foreach (var drive in drives)
+            {
+                if (drive.Dtype == "Join")
+                {
+                    foreach(UserJoin j in drive.UserJoin)
+                    {
+                        j.User = await GetUsr(j.UserId);
+                    }
+                }
+                else
+                {
+                    foreach (UserPickup p in drive.UserPickup)
+                    {
+                        p.User = await GetUsr(p.UserId);
+                    }
+                }
+            }
+            return drives;
         }
 
         /// <summary>
@@ -304,13 +321,23 @@ namespace BbB.Library
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<User> GetUser(int id)
+        private async Task<Usr> GetUsr(int id)
         {
             var list = await bbBContext.Usr.Where(u => u.Id == id).ToListAsync();
             if (list.Any())
-                return Mapper.Map(list.First());
+                return list.First();
             else
                 return null;
+        }
+
+        /// <summary>
+         /// Returns the user with the given id, null if not found
+         /// </summary>
+         /// <param name="id"></param>
+         /// <returns></returns>
+        public async Task<User> GetUser(int id)
+        {
+            return Mapper.Map(await GetUsr(id));
         }
 
         /// <summary>
