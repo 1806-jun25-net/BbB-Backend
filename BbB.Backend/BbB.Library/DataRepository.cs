@@ -11,7 +11,7 @@ using NLog;
 
 namespace BbB.Library
 {
-    public class DataRepository
+    public class DataRepository : IDataRepository
     {
         private readonly BbBContext bbBContext;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();

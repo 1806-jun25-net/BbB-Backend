@@ -2,6 +2,7 @@
 using BbB.Library;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,9 +31,21 @@ namespace BbB.Test
         }
 
         [Fact]
-        public async void TestGetUsers()
+        public void TestGetUsers()
         {
-            var actual = await repo.GetUsers();
+            List<User> users = new List<User>
+            {
+                new User
+                {
+                    Name = "wknain",
+                    Pass = "Password!23",
+                    Company = "Revature"
+                }
+            };
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetUsers()).ReturnsAsync(users);
+
+            var actual = mockRepo.Object;
             Assert.NotNull(actual);
         }
 
