@@ -22,6 +22,118 @@ namespace BbB.Library
         }
 
         /// <summary>
+        /// Finds and archives all drives which need archived
+        /// </summary>
+        /// <returns></returns>
+        private async Task Archive()
+        {
+            List<int> removeMe = new List<int>();
+            foreach (Data.Drive drive in 
+                await bbBContext.Drive
+                .AsNoTracking().ToListAsync())
+            {
+                if (drive.Dtime.Value.AddMinutes(Drive.Buffer) < DateTime.Now)
+                {
+                    removeMe.Add(drive.Id);
+                }
+            }
+            foreach(int i in removeMe)
+            {
+                await ArchiveDrive(i);
+            }
+        }
+
+        /// <summary>
+        /// Archives the drive with given and its sub values. Removes itself and all subvalues
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private async Task ArchiveDrive(int id)
+            //order: arch drive, arch orders, arch items, remove items, remove orders, remove drive
+        {
+            //arch drive
+            Data.Drive drive = await bbBContext.Drive
+                .Where(d => d.Id == id).AsNoTracking().FirstAsync();
+            bbBContext.ArchiveDrive.Add(new ArchiveDrive()
+            {
+                DestinationId = drive.DestinationId,
+                DriverId = drive.DriverId,
+                Dtime = drive.Dtime,
+                Dtype = drive.Dtype
+            });
+            await (bbBContext.SaveChangesAsync());
+            int archiveId = (await bbBContext.ArchiveDrive
+                .Where(d => (d.Dtime == drive.Dtime && d.DriverId == drive.DriverId))
+                .AsNoTracking().FirstAsync()).Id;
+            if(drive.Dtype == "Join")
+            {
+                //arch orders
+                var joins = await bbBContext.UserJoin.Where(j => j.DriveId == drive.Id).AsNoTracking().ToListAsync();
+                foreach (UserJoin j in joins)
+                    bbBContext.ArchiveUserJoin.Add(
+                        new ArchiveUserJoin() { ArchiveDriveId = archiveId, UserId = j.UserId });
+                //remove orders
+                bbBContext.UserJoin.RemoveRange(joins);
+                await bbBContext.SaveChangesAsync();
+            }
+            else
+            {
+                var pickups = await bbBContext.UserPickup.Include(p=>p.OrderItem)
+                    .Where(j => j.DriveId == drive.Id).AsNoTracking().ToListAsync();
+                foreach (UserPickup p in pickups)
+                {
+                    //arch order
+                    bbBContext.ArchiveOrder.Add(new ArchiveOrder() { ArchiveDriveId = archiveId, UserId = p.UserId});
+                    await bbBContext.SaveChangesAsync();
+                    int orderId = (await bbBContext.ArchiveOrder
+                        .Where(o => o.ArchiveDriveId == archiveId && o.UserId == p.UserId)
+                        .AsNoTracking().FirstAsync()).Id;
+                    foreach (Data.OrderItem i in p.OrderItem)
+                        //arch items
+                        bbBContext.ArchiveItem.Add(new ArchiveItem()
+                        {
+                            ArchiveOrderId = orderId,
+                            Cost = i.Item.Cost,
+                            ItemName = i.Item.ItemName,
+                            Msg = i.Msg,
+                            Quantity = i.Quantity
+                        });
+                    //remove items
+                    bbBContext.OrderItem.RemoveRange(p.OrderItem);
+                }
+                //remove orders
+                bbBContext.UserPickup.RemoveRange(pickups);
+                await bbBContext.SaveChangesAsync();
+            }
+            //Remove drive
+            bbBContext.Drive.Remove(drive);
+            await bbBContext.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Get all values of a drive, including user but excluding Orders and menu.
+        /// <para>Archives old drives before querying</para>
+        /// </summary>
+        /// <returns></returns>
+        private async Task<IEnumerable<Data.Drive>> GetFullDrives()
+        {
+            DateTime nextArchive = (await bbBContext.Drive.Select(d => d.Dtime).MinAsync()).GetValueOrDefault();
+            if (nextArchive < DateTime.Now)
+            {
+                await Archive();
+            }
+
+            return await bbBContext.Drive
+                .Include(d => d.Driver)
+                .Include(d=>d.Driver.User)
+                .Include(d => d.Destination)
+                .Include(d => d.UserPickup)
+                .Include(d => d.UserJoin)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// All Users ever
         /// </summary>
         /// <returns></returns>
@@ -30,19 +142,6 @@ namespace BbB.Library
             return Mapper.Map(await bbBContext.Usr.AsNoTracking().ToListAsync());
         }
 
-        /// <summary>
-        /// Helper method, get the full list of data.drives with all includes.
-        /// </summary>
-        /// <returns></returns>
-        private async Task<IEnumerable<Data.Drive>> GetFullDrives()
-        {
-            return await bbBContext.Drive.Include(d => d.Driver)
-                .Include(d=>d.Driver.User)
-                .Include(d => d.Destination)
-                .Include(d => d.UserPickup)
-                .Include(d => d.UserJoin)
-                .ToListAsync();
-        }
 
         /// <summary>
         /// Active drive with given id
@@ -467,6 +566,8 @@ namespace BbB.Library
                 throw;
             }
         }
+
+
 
         /// <summary>
         /// Adds a message with given from, to, content at current Time.

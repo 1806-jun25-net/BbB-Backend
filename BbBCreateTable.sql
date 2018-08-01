@@ -132,14 +132,15 @@ Msg NVarChar(255),
 Constraint PK_ArchiveItem Primary Key (Id),
 Constraint FK_ArchiveItem Foreign Key (ArchiveOrderId) References ArchiveOrder (Id));
 
--- alterations to fix decimal precision
-Alter table Usr
-Alter column Credit decimal(18,2);
-Alter table Usr
-Alter column Rating decimal(18,12);
-Alter table Driver
-alter column Rating decimal(18,12);
-Alter table MenuItem
-alter column cost decimal(18,2);
-Alter table ArchiveItem
-alter column cost decimal(18,2);
+-- alterations to fix decimal precision, updated create tables
+--Alter table Usr
+--Alter column Credit decimal(18,2);
+--Alter table Usr
+--Alter column Rating decimal(18,12);
+--Alter table Driver
+--alter column Rating decimal(18,12);
+--Alter table MenuItem
+--alter column cost decimal(18,2);
+--Alter table ArchiveItem
+--alter column cost decimal(18,2);
+
