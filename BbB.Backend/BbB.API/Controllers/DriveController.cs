@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BbB.Data;
 using BbB.Library;
@@ -88,19 +90,19 @@ namespace BbB.API.Controllers
             }
         }
 
+
         [HttpPost("{driveId}/{userId}")]
-        public async Task<ActionResult<string>> JoinJD(int driveId, int userId)
+        public async Task<ActionResult> JoinJD(int driveId, int userId)
         {
             try
             {
                 await data.JoinJDrive(driveId, userId);
-                return "joined";
+                return Content("joined");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest();
             }
         }
-
     }
 }
