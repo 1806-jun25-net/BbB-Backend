@@ -14,22 +14,6 @@ namespace BbB.Test
 {
     public class RepoTests
     {
-        private readonly DataRepository repo;
-
-        public RepoTests()
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-
-            IConfigurationRoot configuration = builder.Build();
-
-            var optionsBuilder = new DbContextOptionsBuilder<BbBContext>();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("BbB"));
-
-            repo = new DataRepository(new BbBContext(optionsBuilder.Options));
-        }
-
         [Fact]
         public void TestGetUsers()
         {
