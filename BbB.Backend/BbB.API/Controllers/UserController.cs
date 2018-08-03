@@ -92,14 +92,21 @@ namespace BbB.API.Controllers
         }
 
         [HttpPost("loginadmin")]
-        [Authorize(Roles = "admin")]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
-        public async Task<ActionResult> LoginAdmin(User input)
+        public async Task<ActionResult> LoginAdmin(User input, [FromServices] RoleManager<IdentityRole> roleManager,
+             [FromServices] UserManager<IdentityUser> userManager)
         {
             bool verify = await data.VerifyLogin(input.Name, input.Pass);
 
             if (!verify)
+            {
+                return StatusCode(403);
+            }
+
+            var check = await userManager.GetRolesAsync(await userManager.FindByNameAsync(input.Name));
+
+            if (!check.Contains("admin"))
             {
                 return StatusCode(403);
             }
