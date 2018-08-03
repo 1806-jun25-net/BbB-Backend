@@ -97,7 +97,7 @@ namespace BbB.API.Controllers
             try
             {
                 await data.JoinJDrive(driveId, userId);
-                return Content("joined");
+                return Ok();
             }
             catch (Exception ex)
             {
