@@ -555,6 +555,32 @@ namespace BbB.Library
             return d;
         }
 
+        /// <summary>
+        /// Join a join drive
+        /// </summary>
+        /// <param name="driveId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task JoinJDrive(int driveId, int userId)
+        {
+            var userJoin = new UserJoin
+            {
+                DriveId = driveId,
+                UserId = userId
+            };
+            try
+            {
+                bbBContext.Add(userJoin);
+                await bbBContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+
+        }
+
         public async Task<Drive> NewDrive(Drive drive)
         {
             try { return await NewDrive(drive.Driver.Id, drive.Dest.Id, drive.Time, drive.IsPickup); }

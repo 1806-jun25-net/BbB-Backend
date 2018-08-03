@@ -11,9 +11,9 @@ namespace BbB.Library
 
         public static readonly int MAX_PICKUP_SIZE = 12;
 
-        protected Dictionary<User, List<OrderItem>> OrdersReal;
+        public Dictionary<User, List<OrderItem>> OrdersReal;
 
-        protected List<User> UsersReal;
+        public List<User> UsersReal;
 
         /// <summary>
         /// internal Id. -1 if untracked by database

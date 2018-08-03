@@ -32,7 +32,7 @@ namespace BbB.API.Controllers
             if (drive == null)
                 return NotFound();
             else
-                   return  Ok(drive);
+                return Ok(drive);
         }
 
 
@@ -44,7 +44,8 @@ namespace BbB.API.Controllers
         [HttpGet("{company}/company")]
         public async Task<ActionResult<List<Library.Drive>>> GetByCompany(string company)
         {
-            return Ok(await data.GetDrivesByCompany(company));
+            var drive = await data.GetDrivesByCompany(company);
+            return drive.ToList();
         }
 
         /// <summary>
@@ -80,6 +81,20 @@ namespace BbB.API.Controllers
             {
                 var d = await data.NewDrive(drive);
                 return Ok(d);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("{driveId}/{userId}")]
+        public async Task<ActionResult<string>> JoinJD(int driveId, int userId)
+        {
+            try
+            {
+                await data.JoinJDrive(driveId, userId);
+                return "joined";
             }
             catch(Exception ex)
             {
