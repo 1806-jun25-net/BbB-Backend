@@ -166,7 +166,7 @@ namespace BbB.Library
         /// <returns></returns>
         public async Task<Drive> GetDrive(int id)
         {
-            return Mapper.Map((await GetFullDrives()).Where(d=>d.Id == id).FirstOrDefault());
+            return Mapper.Map((await GetFullDrives()).FirstOrDefault(d => d.Id == id));
         }
 
         /// <summary>
@@ -185,8 +185,8 @@ namespace BbB.Library
         public async Task<IEnumerable<Drive>> GetDrivesByUser(int userId)
         {
             return Mapper.Map((await GetFullDrives()).Where(
-                d=> (d.UserJoin.Where(u =>u.UserId == userId).Any() ||
-                d.UserPickup.Where(u => u.UserId == userId).Any())
+                d=> (d.UserJoin.Any(u => u.UserId == userId) ||
+                d.UserPickup.Any(u => u.UserId == userId))
                 )).ToList();
         }
 
