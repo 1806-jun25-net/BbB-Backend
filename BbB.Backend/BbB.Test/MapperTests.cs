@@ -25,7 +25,7 @@ namespace BbB.Test
         }
 
         [Fact]
-        public void TestDataDriver() //todo: figure out why this test fails
+        public void TestDataDriver()
         {
             Data.Driver driver = new Data.Driver()
             {
