@@ -22,6 +22,135 @@ namespace BbB.Library
         }
 
         /// <summary>
+        /// Finds and archives all drives which need archived
+        /// </summary>
+        /// <returns></returns>
+        private async Task Archive()
+        {
+            List<int> removeMe = new List<int>();
+            foreach (Data.Drive drive in 
+                await bbBContext.Drive
+                .AsNoTracking().ToListAsync())
+            {
+                if (drive.Dtime.Value.AddMinutes(Drive.Buffer) < DateTime.Now)
+                {
+                    removeMe.Add(drive.Id);
+                }
+            }
+            foreach(int i in removeMe)
+            {
+                await ArchiveDrive(i);
+            }
+        }
+
+        /// <summary>
+        /// Archives the drive with given and its sub values. Removes itself and all subvalues
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private async Task ArchiveDrive(int id)
+            //order: arch drive, arch orders, arch items, remove items, remove orders, remove drive
+        {
+            //arch drive
+            Data.Drive drive = await bbBContext.Drive
+                .Where(d => d.Id == id).AsNoTracking().FirstAsync();
+            bbBContext.ArchiveDrive.Add(new ArchiveDrive()
+            {
+                DestinationId = drive.DestinationId,
+                DriverId = drive.DriverId,
+                Dtime = drive.Dtime,
+                Dtype = drive.Dtype
+            });
+            await (bbBContext.SaveChangesAsync());
+            int archiveId = (await bbBContext.ArchiveDrive
+                .Where(d => (d.Dtime == drive.Dtime && d.DriverId == drive.DriverId))
+                .AsNoTracking().FirstAsync()).Id;
+            if(drive.Dtype == "Join")
+            {
+                //arch orders
+                var joins = await bbBContext.UserJoin.Where(j => j.DriveId == drive.Id).AsNoTracking().ToListAsync();
+                foreach (UserJoin j in joins)
+                    bbBContext.ArchiveUserJoin.Add(
+                        new ArchiveUserJoin() { ArchiveDriveId = archiveId, UserId = j.UserId });
+                //remove orders
+                bbBContext.UserJoin.RemoveRange(joins);
+                await bbBContext.SaveChangesAsync();
+            }
+            else
+            {
+                var pickups = await bbBContext.UserPickup.Include(p=>p.OrderItem)
+                    .Where(j => j.DriveId == drive.Id).AsNoTracking().ToListAsync();
+                foreach (UserPickup p in pickups)
+                {
+                    //arch order
+                    bbBContext.ArchiveOrder.Add(new ArchiveOrder() { ArchiveDriveId = archiveId, UserId = p.UserId});
+                    await bbBContext.SaveChangesAsync();
+                    int orderId = (await bbBContext.ArchiveOrder
+                        .Where(o => o.ArchiveDriveId == archiveId && o.UserId == p.UserId)
+                        .AsNoTracking().FirstAsync()).Id;
+                    foreach (Data.OrderItem i in p.OrderItem)
+                        //arch items
+                        bbBContext.ArchiveItem.Add(new ArchiveItem()
+                        {
+                            ArchiveOrderId = orderId,
+                            Cost = i.Item.Cost,
+                            ItemName = i.Item.ItemName,
+                            Msg = i.Msg,
+                            Quantity = i.Quantity
+                        });
+                    //remove items
+                    bbBContext.OrderItem.RemoveRange(p.OrderItem);
+                }
+                //remove orders
+                bbBContext.UserPickup.RemoveRange(pickups);
+                await bbBContext.SaveChangesAsync();
+            }
+            //Remove drive
+            bbBContext.Drive.Remove(drive);
+            await bbBContext.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Get all values of a drive, including user but excluding Orders and menu.
+        /// <para>Archives old drives before querying</para>
+        /// </summary>
+        /// <returns></returns>
+        private async Task<IEnumerable<Data.Drive>> GetFullDrives()
+        {
+            DateTime nextArchive = (await bbBContext.Drive.Select(d => d.Dtime).MinAsync()).GetValueOrDefault();
+            if (nextArchive < DateTime.Now)
+            {
+                await Archive();
+            }
+            var drives = await bbBContext.Drive
+                .Include(d => d.Driver)
+                .Include(d=>d.Driver.User)
+                .Include(d => d.Destination)
+                .Include(d => d.UserPickup)
+                .Include(d => d.UserJoin)
+                .AsNoTracking()
+                .ToListAsync();
+            foreach (var drive in drives)
+            {
+                if (drive.Dtype == "Join")
+                {
+                    foreach(UserJoin j in drive.UserJoin)
+                    {
+                        j.User = await GetUsr(j.UserId);
+                    }
+                }
+                else
+                {
+                    foreach (UserPickup p in drive.UserPickup)
+                    {
+                        p.User = await GetUsr(p.UserId);
+                    }
+                }
+            }
+            return drives;
+        }
+
+        /// <summary>
         /// All Users ever
         /// </summary>
         /// <returns></returns>
@@ -30,19 +159,6 @@ namespace BbB.Library
             return Mapper.Map(await bbBContext.Usr.AsNoTracking().ToListAsync());
         }
 
-        /// <summary>
-        /// Helper method, get the full list of data.drives with all includes.
-        /// </summary>
-        /// <returns></returns>
-        private async Task<IEnumerable<Data.Drive>> GetFullDrives()
-        {
-            return await bbBContext.Drive.Include(d => d.Driver)
-                .Include(d=>d.Driver.User)
-                .Include(d => d.Destination)
-                .Include(d => d.UserPickup)
-                .Include(d => d.UserJoin)
-                .ToListAsync();
-        }
 
         /// <summary>
         /// Active drive with given id
@@ -205,13 +321,23 @@ namespace BbB.Library
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<User> GetUser(int id)
+        private async Task<Usr> GetUsr(int id)
         {
             var list = await bbBContext.Usr.Where(u => u.Id == id).ToListAsync();
             if (list.Any())
-                return Mapper.Map(list.First());
+                return list.First();
             else
                 return null;
+        }
+
+        /// <summary>
+         /// Returns the user with the given id, null if not found
+         /// </summary>
+         /// <param name="id"></param>
+         /// <returns></returns>
+        public async Task<User> GetUser(int id)
+        {
+            return Mapper.Map(await GetUsr(id));
         }
 
         /// <summary>
@@ -429,9 +555,35 @@ namespace BbB.Library
             return d;
         }
 
+        /// <summary>
+        /// Join a join drive
+        /// </summary>
+        /// <param name="driveId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task JoinJDrive(int driveId, int userId)
+        {
+            var userJoin = new UserJoin
+            {
+                DriveId = driveId,
+                UserId = userId
+            };
+            try
+            {
+                bbBContext.Add(userJoin);
+                await bbBContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+
+        }
+
         public async Task<Drive> NewDrive(Drive drive)
         {
-            try { return await NewDrive(drive.Driver.Id, drive.Dest.Id, drive.Time, drive.IsPickup()); }
+            try { return await NewDrive(drive.Driver.Id, drive.Dest.Id, drive.Time, drive.IsPickup); }
             catch (Exception ex)
             {//TODO log 
                 throw;
@@ -467,6 +619,8 @@ namespace BbB.Library
                 throw;
             }
         }
+
+
 
         /// <summary>
         /// Adds a message with given from, to, content at current Time.

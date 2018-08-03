@@ -8,9 +8,6 @@ namespace BbB.Library
 {
     public class PickupDrive : Drive
     {
-        public static readonly int MAX_PICKUP_SIZE = 12;
-
-        private Dictionary<User,List<OrderItem>> OrdersReal;
 
         /// <summary>
         /// A new, empty, pickup drive
@@ -22,7 +19,7 @@ namespace BbB.Library
         public PickupDrive(Driver driver, Destination dest, DateTime time, int id = -1):
             base(driver, dest, time, id)
         {
-            OrdersReal = null;
+            IsPickup = true;
         }
 
         /// <summary>
@@ -105,16 +102,6 @@ namespace BbB.Library
             if (!Users().Contains(user))
                 return false;
             return OrdersReal[user].Remove(item);
-        }
-
-
-        /// <summary>
-        /// True, this is a pickup
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsPickup()
-        {
-            return true;
         }
     }
 }

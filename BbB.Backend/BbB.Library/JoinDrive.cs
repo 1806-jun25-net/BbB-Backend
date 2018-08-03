@@ -8,9 +8,6 @@ namespace BbB.Library
 {
     public class JoinDrive : Drive
     {
-        
-        private List<User> UsersReal;
-
         /// <summary>
         /// New, empty, 'join' drive
         /// </summary>
@@ -21,7 +18,7 @@ namespace BbB.Library
         public JoinDrive(Driver driver, Destination dest, DateTime time, int id = -1):
             base(driver, dest, time, id)
         {
-            UsersReal = null;
+            IsPickup = false;
         }
 
         /// <summary>
@@ -59,15 +56,6 @@ namespace BbB.Library
                 return false;
             UsersReal.Remove(user);
             return true;
-        }
-
-        /// <summary>
-        /// False, this is not a pickup
-        /// </summary>
-        /// <returns></returns>
-        public override bool IsPickup()
-        {
-            return false;
         }
     }
 }
