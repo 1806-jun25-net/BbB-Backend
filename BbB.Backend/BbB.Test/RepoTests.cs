@@ -33,15 +33,7 @@ namespace BbB.Test
         [Fact]
         public void TestGetUsers()
         {
-            List<User> users = new List<User>
-            {
-                new User
-                {
-                    Name = "wknain",
-                    Pass = "Password!23",
-                    Company = "Revature"
-                }
-            };
+            List<User> users = new List<User>();
             var mockRepo = new Mock<IDataRepository>();
             mockRepo.Setup(x => x.GetUsers()).ReturnsAsync(users);
 
@@ -50,164 +42,216 @@ namespace BbB.Test
         }
 
         [Fact]
-        public async void TestGetDrives()
+        public void TestGetDrive()
         {
+            Library.Driver driver = new Library.Driver()
+            {
+                Name = "wknain",
+                Pass = "Password!23",
+                Company = "Revature",
+                Seats = 4,
+                MeetLoc = "Garage"
+            };
+            Library.Destination destination = new Library.Destination("Taco Bell", 1, "");
+            PickupDrive drive = new PickupDrive(driver, destination, DateTime.Now);
+            int id = 1;
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetDrive(id)).ReturnsAsync(drive);
+            
+            var actual = mockRepo.Object;
+            Assert.NotNull(actual);
+        }
+
+        [Fact]
+        public void TestGetDrivesByDriver()
+        {
+            List<PickupDrive> drive = new List<PickupDrive>();
+            int id = 1;
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetDrivesByDriver(id)).ReturnsAsync(drive);
+
+            var actual = mockRepo.Object;
+            Assert.NotNull(actual);
+        }
+
+        [Fact]
+        public void TestGetDrivesByUser()
+        {
+            List<PickupDrive> drive = new List<PickupDrive>();
+            int id = 1;
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetDrivesByUser(id)).ReturnsAsync(drive);
+            var actual = mockRepo.Object;
+            Assert.NotNull(actual);
+        }
+
+        [Fact]
+        public void TestGetDrivesByCompany()
+        {
+            List<PickupDrive> drive = new List<PickupDrive>();
             string company = "Revature";
-            var actual = await repo.GetDrives(company);
-            Assert.Empty(actual);
-        }
-        
-        [Fact]
-        public async void TestGetDestinations()
-        {
-            var actual = await repo.GetDestinations();
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetDrivesByCompany(company)).ReturnsAsync(drive);
+            var actual = mockRepo.Object;
             Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestGetDestinationById()
+        public void TestGetDestinations()
         {
+            List<Library.Destination> destinations = new List<Library.Destination>();
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetDestinations()).ReturnsAsync(destinations);
+            var actual = mockRepo.Object;
+            Assert.NotNull(actual);
+        }
+
+        [Fact]
+        public void TestGetDestinationById()
+        {
+            Library.Destination destination = new Library.Destination("Taco Bell", 4, "");
             int id = 4;
-            var actual = await repo.GetDestinationById(id);
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetDestinationById(id)).ReturnsAsync(destination);
+            var actual = mockRepo.Object;
             Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestGetDestinationByTitle()
+        public void TestGetDestinationByTitle()
         {
+            List<Library.Destination> destination = new List<Library.Destination>();
             string title = "Taco Bell";
-            var actual = await repo.GetDestinationByTitle(title);
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetDestinationByTitle(title)).ReturnsAsync(destination);
+            var actual = mockRepo.Object;
             Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestGetMsgFrom()
+        public void TestGetMsgFrom()
         {
+            List<Message> messages = new List<Message>();
             int id = 1;
-            var actual = await repo.GetMsgFrom(id);
-            Assert.Null(actual);
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetMsgFrom(id)).ReturnsAsync(messages);
+            var actual = mockRepo.Object;
+            Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestGetMsgTo()
+        public void TestGetMsgTo()
         {
+            List<Message> messages = new List<Message>();
             int id = 1;
-            var actual = await repo.GetMsgTo(id);
-            Assert.Null(actual);
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetMsgTo(id)).ReturnsAsync(messages);
+            var actual = mockRepo.Object;
+            Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestGetMsg()
+        public void TestGetMsg()
         {
+            int from = 1;
+            int to = 2;
+            string content = "Hello";
+            Message message = new Message(from, to, content, DateTime.Now);
             int id = 1;
-            var actual = await repo.GetMsg(id);
-            Assert.Null(actual);
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetMsg(id)).ReturnsAsync(message);
+            var actual = mockRepo.Object;
+            Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestGetUserReviews()
+        public void TestGetUserReviews()
         {
-            var actual = await repo.GetUserReviews();
-            Assert.Empty(actual);
+            List<UserReview> reviews = new List<UserReview>();
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetUserReviews()).ReturnsAsync(reviews);
+            var actual = mockRepo.Object;
+            Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestGetDriverReviews()
+        public void TestGetDriverReviews()
         {
-            var actual = await repo.GetDriverReviews();
-            Assert.Empty(actual);
+            List<DriverReview> reviews = new List<DriverReview>();
+            var mockRepo = new Mock<IDataRepository>();
+            mockRepo.Setup(x => x.GetDriverReviews()).ReturnsAsync(reviews);
+            var actual = mockRepo.Object;
+            Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestGetMenuItems()
+        public void TestGetMenuItems()
         {
+            List<Library.MenuItem> items = new List<Library.MenuItem>();
+            var mockRepo = new Mock<IDataRepository>();
             int id = 4;
-            var actual = await repo.GetMenuItems(id);
+            mockRepo.Setup(x => x.GetMenuItems(id)).ReturnsAsync(items);
+            var actual = mockRepo.Object;
             Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestVerifyLoginTrue()
+        public void TestVerifyLogin() //todo: figure out how to set these equal to one another
         {
+            var mockRepo = new Mock<IDataRepository>();
             string username = "wknain", password = "Password!23";
             bool expected = true;
-            var actual = await repo.VerifyLogin(username, password);
-            Assert.Equal(expected, actual);
+            mockRepo.Setup(x => x.VerifyLogin(username, password)).ReturnsAsync(expected);
+            var actual = mockRepo.Object;
+            //Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public async void TestVerifyLoginFalse()
+        public void TestGetUser()
         {
-            string username = "wknain", password = "Password123";
-            bool expected = false;
-            var actual = await repo.VerifyLogin(username, password);
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public async void TestGetUserTrue()
-        {
+            User user = new User()
+            {
+                Name = "wknain",
+                Pass = "Password!23"
+            };
+            var mockRepo = new Mock<IDataRepository>();
             int id = 1;
-            var actual = await repo.GetUser(id);
+            mockRepo.Setup(x => x.GetUser(id)).ReturnsAsync(user);
+            var actual = mockRepo.Object;
             Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestGetUserFalse()
+        public void TestCheckUserName()
         {
-            int id = -1;
-            var actual = await repo.GetUser(id);
-            Assert.Null(actual);
-        }
-
-        [Fact]
-        public async void TestCheckUserNameTrue()
-        {
+            var mockRepo = new Mock<IDataRepository>();
             string userName = "Nothing";
             bool expected = true;
-            var actual = await repo.CheckUserName(userName);
-            Assert.Equal(expected, actual);
+            mockRepo.Setup(x => x.CheckUserName(userName)).ReturnsAsync(expected);
+            var actual = mockRepo.Object;
+            //Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public async void TestCheckUserNameFalse()
+        public void TestLookupUserId()
         {
-            string userName = "wknain";
-            bool expected = false;
-            var actual = await repo.CheckUserName(userName);
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public async void TestLookupUserId()
-        {
+            var mockRepo = new Mock<IDataRepository>();
             string name = "wknain";
-            var actual = await repo.LookupUserId(name);
+            int test = 0;
+            mockRepo.Setup(x => x.LookupDestinationId(name)).ReturnsAsync(test);
+            var actual = mockRepo.Object;
             Assert.NotNull(actual);
         }
 
         [Fact]
-        public async void TestLookupDestinationId()
+        public void TestLookupDestinationId()
         {
+            var mockRepo = new Mock<IDataRepository>();
             string name = "Taco Bell";
-            var actual = await repo.LookupDestinationId(name);
+            int test = 0;
+            mockRepo.Setup(x => x.LookupDestinationId(name)).ReturnsAsync(test);
+            var actual = mockRepo.Object;
             Assert.NotNull(actual);
-        }
-
-        [Fact]
-        public async void TestLookupUserIdNull()
-        {
-            string name = "Nothing";
-            var actual = await repo.LookupUserId(name);
-            Assert.Null(actual);
-        }
-
-        [Fact]
-        public async void TestLookupDestinationIdNull()
-        {
-            string name = "Nothing";
-            var actual = await repo.LookupDestinationId(name);
-            Assert.Null(actual);
         }
     }
 }
