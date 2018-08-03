@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BbB.Data;
 using BbB.Library;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -90,6 +91,35 @@ namespace BbB.API.Controllers
             return NoContent();
         }
 
+        [HttpPost("loginadmin")]
+        [Authorize(Roles = "admin")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(403)]
+        public async Task<ActionResult> LoginAdmin(User input)
+        {
+            bool verify = await data.VerifyLogin(input.Name, input.Pass);
+
+            if (!verify)
+            {
+                return StatusCode(403);
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(input.Name, input.Pass,
+                    isPersistent: false, lockoutOnFailure: false);
+
+            if (!result.Succeeded)
+            {
+                return StatusCode(403);
+            }
+
+            //if ()
+            //{
+            //    return StatusCode(403);
+            //}
+
+            return NoContent();
+        }
+
         [HttpPost("logout")]
         [ProducesResponseType(204)]
         public async Task<NoContentResult> Logout()
@@ -103,7 +133,7 @@ namespace BbB.API.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<ActionResult> Register(User input, [FromServices] UserManager<IdentityUser> userManager)
-            //[FromServices] RoleManager<IdentityRole> roleManager, bool admin = false) keep around if we want to implement user roles
+            //[FromServices] RoleManager<IdentityRole> roleManager, bool admin = false) //keep around if we want to implement user roles
         {
             // with an [ApiController], model state is always automatically checked
             // and return 400 if any errors.
