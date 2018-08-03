@@ -581,6 +581,22 @@ namespace BbB.Library
 
         }
 
+        public async Task LeaveJD(int driveId, int userId)
+        {
+            var userJoin = bbBContext.UserJoin.FirstOrDefault(x => x.DriveId == driveId && x.UserId == userId);
+            try
+            {
+                bbBContext.Remove(userJoin);
+                await bbBContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+
+        }
+
         public async Task<Drive> NewDrive(Drive drive)
         {
             try { return await NewDrive(drive.Driver.Id, drive.Dest.Id, drive.Time, drive.IsPickup); }

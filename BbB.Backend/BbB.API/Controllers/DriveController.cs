@@ -60,6 +60,7 @@ namespace BbB.API.Controllers
         {
             return Ok(await data.GetDrivesByUser(userId));
         }
+
         /// <summary>
         /// Get all drives from the driver with given Id
         /// </summary>
@@ -90,13 +91,26 @@ namespace BbB.API.Controllers
             }
         }
 
-
         [HttpPost("{driveId}/{userId}")]
         public async Task<ActionResult> JoinJD(int driveId, int userId)
         {
             try
             {
                 await data.JoinJDrive(driveId, userId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("{driveId}/{userId}/leave")]
+        public async Task<ActionResult> Leave(int driveId, int userId)
+        {
+            try
+            {
+                await data.LeaveJD(driveId, userId);
                 return Ok();
             }
             catch (Exception ex)
