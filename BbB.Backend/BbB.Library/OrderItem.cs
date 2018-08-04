@@ -46,7 +46,7 @@ namespace BbB.Library
         /// </summary>
         /// <param name="name"></param>
         /// <param name="cost"></param>
-        public OrderItem(string name, decimal cost, int quantity= 1, string message = "") :this(new MenuItem(name, cost))
+        public OrderItem(string name, decimal cost, int quantity= 1, string message = "") :this(new MenuItem(name, cost), quantity, message)
         { }
 
         public bool Equals(OrderItem other)
