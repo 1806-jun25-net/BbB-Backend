@@ -68,6 +68,24 @@ namespace BbB.API.Controllers
             context.Remove(result);
         }
 
+        [HttpPost("upgrade")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(403)]
+        public async Task<IActionResult> Upgrade(Library.Driver driver)
+        {
+            int? id = await data.LookupUserId(driver.Name);
+            var check = await data.GetDriverByUserId(id);
+
+            if (check != null)
+            {
+                return StatusCode(403);
+            }
+
+            await data.AddDriver(driver.Id, driver.Seats, driver.MeetLoc);
+
+            return NoContent();
+        }
+
         [HttpPost("login")]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
