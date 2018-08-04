@@ -19,6 +19,34 @@ namespace BbB.API.Controllers
         {
             data = repository;
         }
+        /// <summary>
+          /// Get drive with given id
+          /// </summary>
+          /// <param name="id"></param>
+          /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<List<Library.Drive>>> Get()
+        {
+            var drives = await data.GetArchiveDrives();
+            if (drives == null)
+                return NotFound();
+            else
+                return Ok(drives);
+        }
 
+        /// <summary>
+        /// Get drive with given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Library.Drive>> GetById(int id)
+        {
+            Library.Drive drive = await data.GetArchiveDrive(id);
+            if (drive == null)
+                return NotFound();
+            else
+                return Ok(drive);
+        }
     }
 }
