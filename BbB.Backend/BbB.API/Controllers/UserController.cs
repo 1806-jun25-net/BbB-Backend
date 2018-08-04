@@ -14,6 +14,7 @@ namespace BbB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly DataRepository data;
@@ -34,6 +35,7 @@ namespace BbB.API.Controllers
         }
 
         [HttpGet("{userName}")]
+        [AllowAnonymous]
         public async Task<ActionResult<User>> Get(string userName)
         {
             User user = await data.GetUserByUsername(userName);
@@ -89,6 +91,7 @@ namespace BbB.API.Controllers
         [HttpPost("login")]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
+        [AllowAnonymous]
         public async Task<ActionResult> Login(User input)
         {
             bool verify = await data.VerifyLogin(input.Name, input.Pass);

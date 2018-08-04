@@ -60,6 +60,7 @@ namespace BbB.API.Controllers
         {
             return Ok(await data.GetDrivesByUser(userId));
         }
+
         /// <summary>
         /// Get all drives from the driver with given Id
         /// </summary>
@@ -90,7 +91,6 @@ namespace BbB.API.Controllers
             }
         }
 
-
         [HttpPost("{driveId}/{userId}")]
         public async Task<ActionResult> JoinJD(int driveId, int userId)
         {
@@ -104,5 +104,63 @@ namespace BbB.API.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpPost("{driveId}/{userId}/leave")]
+        public async Task<ActionResult> Leave(int driveId, int userId)
+        {
+            try
+            {
+                await data.LeaveJD(driveId, userId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Get the Ids of joined drives by user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet("{userId}/JoinedDrives")]
+        public async Task<ActionResult<List<int>>> JoinedDrives(int userId)
+        {
+            try
+            {
+                var joined = await data.GetIdOfJoinedDrives(userId);
+                return Ok(joined);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Get the number of people that have joined a pickup drive
+        /// </summary>
+        /// <param name="driveId"></param>
+        /// <returns></returns>
+        [HttpGet("{driveId}/ORCount")]
+        public ActionResult<int> ORCount(int driveId)
+        {
+            try
+            {
+                int count = data.GetOrderRealCount(driveId);
+                return Ok(count);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        //[HttpGet("{driveId}/Pickups")]
+        //public async Task<ActionResult> PickupsByDriveId(int driveId)
+        //{
+        //    var pickups = await data.GetPickups(driveId);
+        //}
     }
 }

@@ -27,7 +27,7 @@ namespace BbB.Library
         /// <summary>
         /// All menu items for this location
         /// </summary>
-        private List<MenuItem> MenuReal { get; set; }
+        public List<MenuItem> MenuReal { get; set; }
 
 
         /// <summary>
