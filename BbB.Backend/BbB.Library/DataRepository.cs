@@ -221,6 +221,7 @@ namespace BbB.Library
             return Mapper.Map(await bbBContext.Destination.Include(m => m.MenuItem)
                 .Include(d => d.Drive).Include(a => a.ArchiveDrive).AsNoTracking().FirstOrDefaultAsync(m => m.Id == id));
         }
+
         /// <summary>
         /// Destination with the given name.
         /// <para>Returns null if not found.</para>
@@ -594,9 +595,36 @@ namespace BbB.Library
                 logger.Info(ex);
                 throw;
             }
-
         }
 
+        public async Task<List<int>> GetIdOfJoinedDrives(int userId)
+        {
+            try
+            {
+                var driveIds = await bbBContext.UserJoin.Where(x => x.UserId == userId).Select(x => x.DriveId).ToListAsync();
+                return driveIds;
+            }
+            catch(Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+        }
+
+        public int GetOrderRealCount(int driveId)
+        {
+            try
+            {
+                int count = bbBContext.UserJoin.Where(x => x.DriveId == driveId).Count();
+                return count;
+            }
+            catch (Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+        }
+        
         public async Task<Drive> NewDrive(Drive drive)
         {
             try { return await NewDrive(drive.Driver.Id, drive.Dest.Id, drive.Time, drive.IsPickup); }
