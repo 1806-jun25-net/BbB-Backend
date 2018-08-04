@@ -8,7 +8,7 @@ namespace BbB.Library
     public interface IDataRepository
     {
         Task AddArchiveDrive(int driverId, int destinationId, string dtype, DateTime dtime);
-        Task AddDriver(int userId, int seats, string meetingLoc);
+        Task AddDriver(int? userId, int seats, string meetingLoc);
         Task AddMessage(int from, int to, string content);
         Task AddUser(string name, string email, string pass, string company);
         Task AddUserCredit(int id, decimal credit);

@@ -513,11 +513,11 @@ namespace BbB.Library
         /// <param name="seats"></param>
         /// <param name="meetingLoc"></param>
         /// <returns></returns>
-        public async Task AddDriver(int userId, int seats, string meetingLoc)
+        public async Task AddDriver(int? userId, int seats, string meetingLoc)
         {
             var driver = new Data.Driver
             {
-                UserId = userId,
+                UserId = userId.Value,
                 Seats = seats,
                 MeetLoc = meetingLoc
             };

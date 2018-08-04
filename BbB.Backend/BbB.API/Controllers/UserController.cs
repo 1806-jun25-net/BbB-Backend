@@ -14,7 +14,7 @@ namespace BbB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UserController : ControllerBase
     {
         private readonly DataRepository data;
@@ -71,6 +71,7 @@ namespace BbB.API.Controllers
         }
 
         [HttpPost("upgrade")]
+        [AllowAnonymous]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
         public async Task<IActionResult> Upgrade(Library.Driver driver)
@@ -83,7 +84,7 @@ namespace BbB.API.Controllers
                 return StatusCode(403);
             }
 
-            await data.AddDriver(driver.Id, driver.Seats, driver.MeetLoc);
+            await data.AddDriver(id, driver.Seats, driver.MeetLoc);
 
             return NoContent();
         }
@@ -149,6 +150,7 @@ namespace BbB.API.Controllers
         }
 
         [HttpPost("logout")]
+        [AllowAnonymous]
         [ProducesResponseType(204)]
         public async Task<NoContentResult> Logout()
         {
