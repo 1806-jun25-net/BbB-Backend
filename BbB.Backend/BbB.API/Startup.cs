@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BbB.Data;
 using BbB.Library;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -40,6 +41,33 @@ namespace BbB.API
             services.AddDbContext<IdentityDbContext>(db => db.UseSqlServer(Configuration.GetConnectionString("BbBAuth"),
                 b => b.MigrationsAssembly("BbB.API")));
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.Name = "MVCookie";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = ctx =>
+                    {
+                        ctx.Response.StatusCode = 401; // Unauthorized
+                        return Task.FromResult(0);
+                    },
+                    OnRedirectToAccessDenied = ctx =>
+                    {
+                        ctx.Response.StatusCode = 403; // Forbidden
+                        return Task.FromResult(0);
+                    },
+                };
+            });
+
+            services.AddAuthentication();
+
+            services.AddCors();
+
+            services.AddMvc()
+                .AddXmlSerializerFormatters()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
@@ -65,6 +93,17 @@ namespace BbB.API
                 app.UseHsts();
             }
 
+            app.UseAuthentication();
+
+            // enable all cross-origin requests
+            app.UseCors(x => x
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin() // could put just angular url here
+                .AllowCredentials());
+
+            // *may* also need to enable CORS on the App Service resource
+
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
@@ -74,6 +113,6 @@ namespace BbB.API
 
             app.UseHttpsRedirection();
             app.UseMvc();
-        }
+        }   
     }
 }

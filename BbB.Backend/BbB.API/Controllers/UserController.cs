@@ -35,7 +35,6 @@ namespace BbB.API.Controllers
         }
 
         [HttpGet("{userName}")]
-        [AllowAnonymous]
         public async Task<ActionResult<User>> Get(string userName)
         {
             User user = await data.GetUserByUsername(userName);
@@ -131,6 +130,7 @@ namespace BbB.API.Controllers
         }
 
         [HttpPost("logout")]
+        [AllowAnonymous]
         [ProducesResponseType(204)]
         public async Task<NoContentResult> Logout()
         {
