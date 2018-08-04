@@ -414,9 +414,19 @@ namespace BbB.Library
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<Driver> GetDriver(int id)
+        public async Task<Driver> GetDriverByDriverId(int id)
         {
             return Mapper.Map(await bbBContext.Driver.Where(d => d.Id == id).Include(u=>u.User).AsNoTracking().FirstOrDefaultAsync());
+        }
+
+        /// <summary>
+        /// Gets the driver with the given User Id. returns null if not found
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Driver> GetDriverByUserId(int? id)
+        {
+            return Mapper.Map(await bbBContext.Driver.Where(d => d.User.Id == id).Include(u => u.User).AsNoTracking().FirstOrDefaultAsync());
         }
 
         /// <summary>
@@ -503,12 +513,11 @@ namespace BbB.Library
         /// <param name="seats"></param>
         /// <param name="meetingLoc"></param>
         /// <returns></returns>
-        public async Task AddDriver(int driverId, int userId, int seats, string meetingLoc)
+        public async Task AddDriver(int? userId, int seats, string meetingLoc)
         {
             var driver = new Data.Driver
             {
-                UserId = userId,
-                Id = driverId,
+                UserId = userId.Value,
                 Seats = seats,
                 MeetLoc = meetingLoc
             };
@@ -535,7 +544,7 @@ namespace BbB.Library
         /// <returns></returns>
         public async Task<Drive> NewDrive(int driverId, int destId, DateTime time, bool isPickup)
         {
-            Driver driver = await GetDriver(driverId);
+            Driver driver = await GetDriverByDriverId(driverId);
             Destination dest = await GetDestinationById(destId);
             if (driver == null || dest == null || time < DateTime.Now.AddMinutes(Drive.Buffer))
                 throw new Exception("Improper drive parameters.");
@@ -550,7 +559,8 @@ namespace BbB.Library
                 await bbBContext.SaveChangesAsync();
             }
             catch (Exception ex)
-            { //TODO Log
+            {
+                logger.Info(ex);
                 throw;
             }
             return d;
@@ -629,7 +639,8 @@ namespace BbB.Library
         {
             try { return await NewDrive(drive.Driver.Id, drive.Dest.Id, drive.Time, drive.IsPickup); }
             catch (Exception ex)
-            {//TODO log 
+            {
+                logger.Info(ex);
                 throw;
             }
         }

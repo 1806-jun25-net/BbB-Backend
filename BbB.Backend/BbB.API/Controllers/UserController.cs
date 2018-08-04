@@ -14,7 +14,7 @@ namespace BbB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UserController : ControllerBase
     {
         private readonly DataRepository data;
@@ -67,6 +67,25 @@ namespace BbB.API.Controllers
         {
             User result = await data.GetUser(id);
             context.Remove(result);
+        }
+
+        [HttpPost("upgrade")]
+        [AllowAnonymous]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(403)]
+        public async Task<IActionResult> Upgrade(Library.Driver driver)
+        {
+            int? id = await data.LookupUserId(driver.Name);
+            var check = await data.GetDriverByUserId(id);
+
+            if (check != null)
+            {
+                return StatusCode(403);
+            }
+
+            await data.AddDriver(id, driver.Seats, driver.MeetLoc);
+
+            return NoContent();
         }
 
         [HttpPost("login")]
