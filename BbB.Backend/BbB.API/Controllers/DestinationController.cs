@@ -12,7 +12,7 @@ namespace BbB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class DestinationController : ControllerBase
     {
         private readonly DataRepository data;
