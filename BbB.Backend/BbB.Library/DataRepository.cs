@@ -770,5 +770,28 @@ namespace BbB.Library
                 return null;
             }
         }
+
+        /// <summary>
+        /// retmoves an item from a destinations menu and returns the new destination
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Destination> RemoveMenuItem(MenuItem item, int destId)
+        {
+            try
+            {
+                bbBContext.MenuItem.Remove(Mapper.Map(item, destId));
+                await bbBContext.SaveChangesAsync();
+                var get = await bbBContext.Destination
+                    .Where(d => d.Id == destId)
+                    .Include(d=>d.MenuItem)
+                    .FirstOrDefaultAsync();
+                return Mapper.Map(get);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }

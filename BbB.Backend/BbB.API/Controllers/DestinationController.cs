@@ -83,5 +83,14 @@ namespace BbB.API.Controllers
                 return BadRequest();
             return Ok(item);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Library.Destination>> DeleteItem(Library.MenuItem input, int id)
+        {
+            var dest = await data.RemoveMenuItem(input, id);
+            if (dest == null)
+                return BadRequest();
+            return Ok(dest);
+        }
     }
 }
