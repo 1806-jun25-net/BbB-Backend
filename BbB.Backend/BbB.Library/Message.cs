@@ -9,10 +9,10 @@ namespace BbB.Library
     public class Message
     {
         public int Id { get; set; }
-        public int FromId { get; }
-        public int ToId { get; }
-        public string Content { get; }
-        public DateTime Time { get; }
+        public int FromId { get; set; }
+        public int ToId { get; set; }
+        public string Content { get; set; }
+        public DateTime Time { get; set; }
 
         public Message(int from, int to, string content, DateTime time, int id = -1)
         {

@@ -34,8 +34,8 @@ namespace BbB.API.Controllers
             return data.GetUsers();
         }
 
-        [HttpGet("{userName}")]
-        public async Task<ActionResult<User>> Get(string userName)
+        [HttpGet("{userName}/user")]
+        public async Task<ActionResult<User>> GetUser(string userName)
         {
             User user = await data.GetUserByUsername(userName);
             if (user == null)
@@ -43,6 +43,18 @@ namespace BbB.API.Controllers
                 return NoContent();
             }
             return user;
+        }
+
+        [HttpGet("{userName}/driver")]
+        public async Task<ActionResult<User>> GetDriver(string userName)
+        {
+            int? id = await data.LookupUserId(userName);
+            Library.Driver driver = await data.GetDriverByUserId(id);
+            if (driver == null)
+            {
+                return await GetUser(userName);
+            }
+            return driver;
         }
 
         [HttpPut("{id}")]

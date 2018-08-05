@@ -242,7 +242,7 @@ namespace BbB.Library
         /// <returns></returns>
         public async Task<IEnumerable<Message>> GetMsgFrom(int userId)
         {
-            if (await bbBContext.Usr.Where(u => u.Id == userId).AnyAsync())
+            if (!await bbBContext.Usr.Where(u => u.Id == userId).AnyAsync())
                 return null;
             return Mapper.Map(await bbBContext.Msg.Where(m => m.SenderId == userId).AsNoTracking().ToListAsync());
         }
@@ -254,7 +254,7 @@ namespace BbB.Library
         /// <returns></returns>
         public async Task<IEnumerable<Message>> GetMsgTo(int userId)
         {
-            if (await bbBContext.Usr.Where(u => u.Id == userId).AnyAsync())
+            if (!await bbBContext.Usr.Where(u => u.Id == userId).AnyAsync())
                 return null;
             return Mapper.Map(await bbBContext.Msg.Where(m => m.ReceiverId == userId).AsNoTracking().ToListAsync());
         }
@@ -519,7 +519,8 @@ namespace BbB.Library
             {
                 UserId = userId.Value,
                 Seats = seats,
-                MeetLoc = meetingLoc
+                MeetLoc = meetingLoc,
+                Rating = 0
             };
 
             try
