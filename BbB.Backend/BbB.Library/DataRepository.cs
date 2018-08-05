@@ -715,7 +715,11 @@ namespace BbB.Library
         public async Task<Drive> GetArchiveDrive(int id)
         {
             return Mapper.Map(await bbBContext.ArchiveDrive.Where(d => d.Id == id)
-                .Include(d => d.ArchiveOrder).Include(d => d.ArchiveUserJoin).FirstOrDefaultAsync());
+                .Include(d => d.Destination).Include(d => d.Driver).ThenInclude(d => d.User)
+                .Include(d => d.ArchiveOrder).ThenInclude(o => o.User)
+                .Include(d => d.ArchiveOrder).ThenInclude(o => o.ArchiveItem)
+                .Include(d => d.ArchiveUserJoin).ThenInclude(j => j.User)
+                .FirstOrDefaultAsync());
         }
 
         /// <summary>
@@ -725,7 +729,11 @@ namespace BbB.Library
         public async Task<IEnumerable<Drive>> GetArchiveDrives()
         {
             return Mapper.Map(await bbBContext.ArchiveDrive
-                .Include(d => d.ArchiveOrder).Include(d => d.ArchiveUserJoin).ToListAsync());
+                .Include(d => d.Destination).Include(d => d.Driver).ThenInclude(d => d.User)
+                .Include(d => d.ArchiveOrder).ThenInclude(o=>o.User)
+                .Include(d => d.ArchiveOrder).ThenInclude(o => o.ArchiveItem)
+                .Include(d => d.ArchiveUserJoin).ThenInclude(j=>j.User)
+                .ToListAsync());
 
         }
     }
