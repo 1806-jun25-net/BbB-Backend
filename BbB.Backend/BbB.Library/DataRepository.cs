@@ -640,11 +640,11 @@ namespace BbB.Library
             }
         }
 
-        public async Task NewOrderItem(Library.OrderItem orderItem, int orderId)
+        public async Task NewOrderItem(OrderItem orderItem, int orderId)
         {
             try
             {
-                bbBContext.Add(Mapper.Map(orderItem, orderId));
+                bbBContext.OrderItem.Add(Mapper.MapActive(orderItem, orderId));
                 await bbBContext.SaveChangesAsync();
             }
             catch(Exception ex)
