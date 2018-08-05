@@ -618,12 +618,62 @@ namespace BbB.Library
             }
         }
 
+        public async Task<int> JoinPickup(int driveId, int userId)
+        {
+            var pickup = new UserPickup
+            {
+                DriveId = driveId,
+                UserId = userId
+            };
+            try
+            {
+                bbBContext.Add(pickup);
+                await bbBContext.SaveChangesAsync();
+
+                var createdPickup = await bbBContext.UserPickup.FirstOrDefaultAsync(x => x.DriveId == driveId && x.UserId == userId);
+                return createdPickup.Id;
+            }
+            catch (Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+        }
+
+        public async Task NewOrderItem(Library.OrderItem orderItem, int orderId)
+        {
+            try
+            {
+                bbBContext.Add(Mapper.Map(orderItem, orderId));
+                await bbBContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+        }
+
         public async Task<List<int>> GetIdOfJoinedDrives(int userId)
         {
             try
             {
                 var driveIds = await bbBContext.UserJoin.Where(x => x.UserId == userId).Select(x => x.DriveId).ToListAsync();
                 return driveIds;
+            }
+            catch(Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+        }
+        
+        public async Task<List<int>> GetIdOfJoinedPickups(int userId)
+        {
+            try
+            {
+                var drivesIds = await bbBContext.UserPickup.Where(x => x.UserId == userId).Select(x => x.DriveId).ToListAsync();
+                return drivesIds;
             }
             catch(Exception ex)
             {
@@ -686,8 +736,6 @@ namespace BbB.Library
             }
         }
 
-
-
         /// <summary>
         /// Adds a message with given from, to, content at current Time.
         /// Does NOT check that userIds from, to exist
@@ -745,7 +793,64 @@ namespace BbB.Library
                 .Include(d => d.ArchiveOrder).ThenInclude(o => o.ArchiveItem)
                 .Include(d => d.ArchiveUserJoin).ThenInclude(j=>j.User)
                 .ToListAsync());
-
         }
+
+        public async Task<Destination> NewDestination(Destination input)
+        {
+            try
+            {
+                bbBContext.Destination.Add(Mapper.Map(input));
+                await bbBContext.SaveChangesAsync();
+                var get = await bbBContext.Destination
+                    .Where(d => d.StreetAddress == input.Address && d.Title == input.Name)
+                    .FirstOrDefaultAsync();
+                return Mapper.Map(get);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<MenuItem> NewMenuItem(MenuItem input, int destId)
+        {
+            try
+            {
+                bbBContext.MenuItem.Add(Mapper.Map(input,destId));
+                await bbBContext.SaveChangesAsync();
+                var get = await bbBContext.MenuItem
+                    .Where(d => d.ItemName == input.Name && d.DestinationId == destId)
+                    .FirstOrDefaultAsync();
+                return Mapper.Map(get);
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// retmoves an item from a destinations menu and returns the new destination
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Destination> RemoveMenuItem(int itemId, int destId)
+        {
+            try
+            {
+                Data.MenuItem m = await bbBContext.MenuItem.Where(d => d.Id == itemId).FirstOrDefaultAsync();
+                bbBContext.MenuItem.Remove(m);
+                await bbBContext.SaveChangesAsync();
+                var get = await bbBContext.Destination
+                    .Where(d => d.Id == destId)
+                    .Include(d=>d.MenuItem)
+                    .FirstOrDefaultAsync();
+                return Mapper.Map(get);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }

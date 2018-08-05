@@ -64,5 +64,33 @@ namespace BbB.API.Controllers
             var menu = await data.GetMenuItems(id);
             return Ok(menu.ToList());
         }
+
+
+        [HttpPost]
+        public async Task<ActionResult<Library.Destination>> NewDest(Library.Destination input)
+        {
+            var dest = await data.NewDestination(input);
+            if (dest == null)
+                return BadRequest();
+            return Ok(dest);
+        }
+
+        [HttpPost("{id}")]
+        public async Task<ActionResult<Library.MenuItem>> AddItem(Library.MenuItem input, int id)
+        {
+            var item = await data.NewMenuItem(input, id);
+            if (item == null)
+                return BadRequest();
+            return Ok(item);
+        }
+
+        [HttpDelete("{id}:{itemId}")]
+        public async Task<ActionResult<Library.Destination>> DeleteItem(int id, int itemId)
+        {
+            var dest = await data.RemoveMenuItem(itemId,id);
+            if (dest == null)
+                return BadRequest();
+            return Ok(dest);
+        }
     }
 }

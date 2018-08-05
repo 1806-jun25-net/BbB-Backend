@@ -130,6 +130,34 @@ namespace BbB.API.Controllers
             }
         }
 
+        [HttpPost("{driveId}/{userId}/pickup")]
+        public async Task<ActionResult<int>> JoinPickup(int driveId, int userId)
+        {
+            try
+            {
+                var id = await data.JoinPickup(driveId, userId);
+                return Ok(id);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("{orderId}/NewOrderItem")]
+        public async Task<ActionResult> StoreOrderItem(Library.OrderItem orderItem, int orderId)
+        {
+            try
+            {
+                await data.NewOrderItem(orderItem, orderId);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
         /// <summary>
         /// Get the Ids of joined drives by user
         /// </summary>
@@ -146,6 +174,20 @@ namespace BbB.API.Controllers
             catch (Exception ex)
             {
                 logger.Info(ex);
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("{userId}/JoinedPickups")]
+        public async Task<ActionResult<List<int>>> JoinedPickups(int userId)
+        {
+            try
+            {
+                var joined = await data.GetIdOfJoinedPickups(userId);
+                return Ok(joined);
+            }
+            catch (Exception ex)
+            {
                 return BadRequest();
             }
         }
