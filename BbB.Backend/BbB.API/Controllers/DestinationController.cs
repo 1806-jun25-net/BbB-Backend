@@ -12,7 +12,6 @@ namespace BbB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class DestinationController : ControllerBase
     {
         private readonly DataRepository data;
@@ -60,9 +59,10 @@ namespace BbB.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}/menu")]
-        public async Task<ActionResult<Library.MenuItem>> GetMenu(int id)
+        public async Task<ActionResult<List<Library.MenuItem>>> GetMenu(int id)
         {
-            return Ok(await data.GetMenuItems(id));
+            var menu = await data.GetMenuItems(id);
+            return Ok(menu.ToList());
         }
     }
 }

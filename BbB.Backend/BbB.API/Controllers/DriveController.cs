@@ -14,7 +14,6 @@ namespace BbB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class DriveController : Controller
     {
         private readonly DataRepository data;
