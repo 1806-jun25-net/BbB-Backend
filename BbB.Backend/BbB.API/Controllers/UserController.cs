@@ -48,7 +48,7 @@ namespace BbB.API.Controllers
         [HttpGet("{userName}/driver")]
         public async Task<ActionResult<User>> GetDriver(string userName)
         {
-            int? id = await data.LookupUserId(userName);
+            int id = await data.LookupUserId(userName);
             Library.Driver driver = await data.GetDriverByUserId(id);
             if (driver == null)
             {
@@ -87,7 +87,7 @@ namespace BbB.API.Controllers
         [ProducesResponseType(403)]
         public async Task<IActionResult> Upgrade(Library.Driver driver)
         {
-            int? id = await data.LookupUserId(driver.Name);
+            int id = await data.LookupUserId(driver.Name);
             var check = await data.GetDriverByUserId(id);
 
             if (check != null)

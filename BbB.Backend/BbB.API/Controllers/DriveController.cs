@@ -9,6 +9,7 @@ using BbB.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 
 namespace BbB.API.Controllers
 {
@@ -18,6 +19,7 @@ namespace BbB.API.Controllers
     public class DriveController : Controller
     {
         private readonly DataRepository data;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public DriveController(DataRepository repository)
         {
@@ -79,9 +81,13 @@ namespace BbB.API.Controllers
         /// </summary>
         /// <param name="drive"></param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<ActionResult<Library.Drive>> New(Library.Drive drive)
+        [HttpPost("create")]
+        public async Task<ActionResult<Library.Drive>> New(PickupDrive drive)
         {
+            if (drive.Dest.Id == 0)
+            {
+                drive.Dest.Id = await data.LookupDestinationId(drive.Dest.Name);
+            }
             try
             {
                 var d = await data.NewDrive(drive);
@@ -89,6 +95,7 @@ namespace BbB.API.Controllers
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 return BadRequest();
             }
         }
@@ -103,6 +110,7 @@ namespace BbB.API.Controllers
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 return BadRequest();
             }
         }
@@ -116,6 +124,35 @@ namespace BbB.API.Controllers
                 return Ok();
             }
             catch (Exception ex)
+            {
+                logger.Info(ex);
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("{driveId}/{userId}/pickup")]
+        public async Task<ActionResult<int>> JoinPickup(int driveId, int userId)
+        {
+            try
+            {
+                var id = await data.JoinPickup(driveId, userId);
+                return Ok(id);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("{orderId}/NewOrderItem")]
+        public async Task<ActionResult> StoreOrderItem(Library.OrderItem orderItem, int orderId)
+        {
+            try
+            {
+                await data.NewOrderItem(orderItem, orderId);
+                return Ok();
+            }
+            catch(Exception ex)
             {
                 return BadRequest();
             }
@@ -132,6 +169,21 @@ namespace BbB.API.Controllers
             try
             {
                 var joined = await data.GetIdOfJoinedDrives(userId);
+                return Ok(joined);
+            }
+            catch (Exception ex)
+            {
+                logger.Info(ex);
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("{userId}/JoinedPickups")]
+        public async Task<ActionResult<List<int>>> JoinedPickups(int userId)
+        {
+            try
+            {
+                var joined = await data.GetIdOfJoinedPickups(userId);
                 return Ok(joined);
             }
             catch (Exception ex)
@@ -155,6 +207,7 @@ namespace BbB.API.Controllers
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 return BadRequest();
             }
         }

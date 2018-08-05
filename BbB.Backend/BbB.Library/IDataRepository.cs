@@ -8,7 +8,7 @@ namespace BbB.Library
     public interface IDataRepository
     {
         Task AddArchiveDrive(int driverId, int destinationId, string dtype, DateTime dtime);
-        Task AddDriver(int? userId, int seats, string meetingLoc);
+        Task AddDriver(int userId, int seats, string meetingLoc);
         Task AddMessage(int from, int to, string content);
         Task AddUser(string name, string email, string pass, string company);
         Task AddUserCredit(int id, decimal credit);
@@ -18,7 +18,7 @@ namespace BbB.Library
         Task<IEnumerable<Destination>> GetDestinations();
         Task<Drive> GetDrive(int id);
         Task<Driver> GetDriverByDriverId(int id);
-        Task<Driver> GetDriverByUserId(int? id);
+        Task<Driver> GetDriverByUserId(int id);
         Task<IEnumerable<DriverReview>> GetDriverReviews();
         Task<IEnumerable<Drive>> GetDrivesByCompany(string company);
         Task<IEnumerable<Drive>> GetDrivesByDriver(int driverId);
@@ -31,8 +31,8 @@ namespace BbB.Library
         Task<User> GetUserByUsername(string username);
         Task<IEnumerable<UserReview>> GetUserReviews();
         Task<IEnumerable<User>> GetUsers();
-        Task<int?> LookupDestinationId(string name);
-        Task<int?> LookupUserId(string name);
+        Task<int> LookupDestinationId(string name);
+        Task<int> LookupUserId(string name);
         Task<Drive> NewDrive(Drive drive);
         Task<Drive> NewDrive(int driverId, int destId, DateTime time, bool isPickup);
         Task RemoveUserCredit(int id, decimal credit);
