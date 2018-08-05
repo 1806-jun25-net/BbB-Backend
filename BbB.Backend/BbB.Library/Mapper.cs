@@ -214,30 +214,36 @@ namespace BbB.Library
                 archiveItem.Quantity.Value, archiveItem.Msg);
         }
 
-        public static Data.OrderItem Map(OrderItem orderItem, int orderId)
+        public static Data.OrderItem MapActive(OrderItem orderItem, int orderId)
         {
             if (orderItem == null) return null;
-            return new Data.OrderItem
+            var i =  new Data.OrderItem
             {
-                ItemId = orderItem.Item.Id,
-                OrderId = orderId,
                 Msg = orderItem.Message,
                 Quantity = orderItem.Quantity
             };
+            if (orderItem.Item.Id > -1)
+                i.ItemId = orderItem.Item.Id;
+            if (orderId>-1)
+                i.OrderId = orderId;
+            return i;
         }
 
-        public static Data.ArchiveItem Map(OrderItem orderItem)
+        public static Data.ArchiveItem MapArchive(OrderItem orderItem, int archiveId)
         {
             if (orderItem == null) return null;
-            return new Data.ArchiveItem
+            var a = new Data.ArchiveItem
             {
-                ArchiveOrderId = 0,
                 Cost = orderItem.Item.Cost,
                 Id = orderItem.Id,
                 ItemName = orderItem.Item.Name,
                 Msg = orderItem.Message,
                 Quantity = orderItem.Quantity
             };
+            if (orderItem.Id > -1)
+                a.Id = orderItem.Id;
+            a.ArchiveOrderId = archiveId;
+            return a;
 
         }
 
@@ -250,13 +256,14 @@ namespace BbB.Library
         public static Data.MenuItem Map(MenuItem menuItem, int destId)
         {
             if (menuItem == null) return null;
-            return new Data.MenuItem
+            var item = new Data.MenuItem
             {
                 Cost = menuItem.Cost,
                 DestinationId = destId,
-                Id = menuItem.Id,
                 ItemName = menuItem.Name
             };
+            if (menuItem.Id != -1) { item.Id = menuItem.Id; }
+            return item;
         }
 
         public static Message Map(Data.Msg msg)
@@ -342,12 +349,12 @@ namespace BbB.Library
 
         public static IEnumerable<Data.OrderItem> Map(IEnumerable<OrderItem> items, int destId)
         {
-            return items.Select(i=>Map(i,destId));
+            return items.Select(i=>MapActive(i,destId));
         }
 
-        public static IEnumerable<Data.ArchiveItem> Map(IEnumerable<OrderItem> items)
+        public static IEnumerable<Data.ArchiveItem> MapArchive(IEnumerable<OrderItem> items, int archiveId)
         {
-            return items.Select(i=>Map(i));
+            return items.Select(i=>MapArchive(i, archiveId));
         }
 
 

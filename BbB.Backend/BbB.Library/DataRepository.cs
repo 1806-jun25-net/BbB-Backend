@@ -783,7 +783,64 @@ namespace BbB.Library
                 .Include(d => d.ArchiveOrder).ThenInclude(o => o.ArchiveItem)
                 .Include(d => d.ArchiveUserJoin).ThenInclude(j=>j.User)
                 .ToListAsync());
-
         }
+
+        public async Task<Destination> NewDestination(Destination input)
+        {
+            try
+            {
+                bbBContext.Destination.Add(Mapper.Map(input));
+                await bbBContext.SaveChangesAsync();
+                var get = await bbBContext.Destination
+                    .Where(d => d.StreetAddress == input.Address && d.Title == input.Name)
+                    .FirstOrDefaultAsync();
+                return Mapper.Map(get);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<MenuItem> NewMenuItem(MenuItem input, int destId)
+        {
+            try
+            {
+                bbBContext.MenuItem.Add(Mapper.Map(input,destId));
+                await bbBContext.SaveChangesAsync();
+                var get = await bbBContext.MenuItem
+                    .Where(d => d.ItemName == input.Name && d.DestinationId == destId)
+                    .FirstOrDefaultAsync();
+                return Mapper.Map(get);
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// retmoves an item from a destinations menu and returns the new destination
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Destination> RemoveMenuItem(int itemId, int destId)
+        {
+            try
+            {
+                Data.MenuItem m = await bbBContext.MenuItem.Where(d => d.Id == itemId).FirstOrDefaultAsync();
+                bbBContext.MenuItem.Remove(m);
+                await bbBContext.SaveChangesAsync();
+                var get = await bbBContext.Destination
+                    .Where(d => d.Id == destId)
+                    .Include(d=>d.MenuItem)
+                    .FirstOrDefaultAsync();
+                return Mapper.Map(get);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }
