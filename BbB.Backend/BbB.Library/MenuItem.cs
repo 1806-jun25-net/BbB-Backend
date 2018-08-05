@@ -11,11 +11,12 @@ namespace BbB.Library
     /// </summary>
     public class MenuItem
     {
-        public int Id { get; }
-        public string Name {get;}
+        public int Id { get; set;  }
+        public string Name { get; set; }
         public decimal Cost { get; set; }
-        public MenuItem(string name, decimal cost, int Id = -1)
+        public MenuItem(string name, decimal cost, int id = -1)
         {
+            Id = id;
             Cost = cost;
             Name = name;
         }
