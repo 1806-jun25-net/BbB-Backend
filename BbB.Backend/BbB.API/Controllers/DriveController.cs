@@ -9,6 +9,7 @@ using BbB.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 
 namespace BbB.API.Controllers
 {
@@ -18,6 +19,7 @@ namespace BbB.API.Controllers
     public class DriveController : Controller
     {
         private readonly DataRepository data;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public DriveController(DataRepository repository)
         {
@@ -79,9 +81,13 @@ namespace BbB.API.Controllers
         /// </summary>
         /// <param name="drive"></param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<ActionResult<Library.Drive>> New(Library.Drive drive)
+        [HttpPost("create")]
+        public async Task<ActionResult<Library.Drive>> New(PickupDrive drive)
         {
+            if (drive.Dest.Id == 0)
+            {
+                drive.Dest.Id = await data.LookupDestinationId(drive.Dest.Name);
+            }
             try
             {
                 var d = await data.NewDrive(drive);
@@ -89,6 +95,7 @@ namespace BbB.API.Controllers
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 return BadRequest();
             }
         }
@@ -103,6 +110,7 @@ namespace BbB.API.Controllers
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 return BadRequest();
             }
         }
@@ -117,6 +125,7 @@ namespace BbB.API.Controllers
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 return BadRequest();
             }
         }
@@ -136,6 +145,7 @@ namespace BbB.API.Controllers
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 return BadRequest();
             }
         }
@@ -155,6 +165,7 @@ namespace BbB.API.Controllers
             }
             catch (Exception ex)
             {
+                logger.Info(ex);
                 return BadRequest();
             }
         }

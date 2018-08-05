@@ -376,7 +376,7 @@ namespace BbB.Library
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<int?> LookupUserId(string name)
+        public async Task<int> LookupUserId(string name)
         {
             List<Usr> usrs = await bbBContext.Usr.AsTracking().ToListAsync();
 
@@ -387,7 +387,7 @@ namespace BbB.Library
                     return item.Id;
                 }
             }
-            return null; // method that calls this should check for null, which means the user was not found
+            return 0; // method that calls this should check for null, which means the user was not found
         }
 
         /// <summary>
@@ -395,7 +395,7 @@ namespace BbB.Library
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<int?> LookupDestinationId(string name)
+        public async Task<int> LookupDestinationId(string name)
         {
             List<Data.Destination> destinations = await bbBContext.Destination.AsTracking().ToListAsync();
 
@@ -406,7 +406,7 @@ namespace BbB.Library
                     return item.Id;
                 }
             }
-            return null; // method that calls this should check for null, which means the location was not found
+            return 0; // method that calls this should check for null, which means the location was not found
         }
 
         /// <summary>
@@ -424,7 +424,7 @@ namespace BbB.Library
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<Driver> GetDriverByUserId(int? id)
+        public async Task<Driver> GetDriverByUserId(int id)
         {
             return Mapper.Map(await bbBContext.Driver.Where(d => d.User.Id == id).Include(u => u.User).AsNoTracking().FirstOrDefaultAsync());
         }
@@ -513,11 +513,11 @@ namespace BbB.Library
         /// <param name="seats"></param>
         /// <param name="meetingLoc"></param>
         /// <returns></returns>
-        public async Task AddDriver(int? userId, int seats, string meetingLoc)
+        public async Task AddDriver(int userId, int seats, string meetingLoc)
         {
             var driver = new Data.Driver
             {
-                UserId = userId.Value,
+                UserId = userId,
                 Seats = seats,
                 MeetLoc = meetingLoc,
                 Rating = 0
@@ -549,6 +549,16 @@ namespace BbB.Library
             Destination dest = await GetDestinationById(destId);
             if (driver == null || dest == null || time < DateTime.Now.AddMinutes(Drive.Buffer))
                 throw new Exception("Improper drive parameters.");
+
+            IEnumerable<Drive> drives = await GetDrivesByDriver(driverId);
+            Drive lastDrive = drives.Last();
+
+            //checks to see if the driver created a drive in the past 12 hours
+            if (time < DateTime.Now.AddHours(12))
+            {
+                throw new Exception("You must wait 12 hours to create a new drive");
+            }
+
             Drive d;
             if (!isPickup)
                 d = new JoinDrive(driver, dest, time);
