@@ -114,7 +114,7 @@ namespace BbB.Data
 
             modelBuilder.Entity<Destination>(entity =>
             {
-                entity.Property(e => e.StreetAddress).HasMaxLength(30);
+                entity.Property(e => e.StreetAddress).HasMaxLength(60);
 
                 entity.Property(e => e.Title).HasMaxLength(16);
             });

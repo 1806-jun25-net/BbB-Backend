@@ -748,7 +748,7 @@ namespace BbB.Library
                     .FirstOrDefaultAsync();
                 return Mapper.Map(get);
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }
