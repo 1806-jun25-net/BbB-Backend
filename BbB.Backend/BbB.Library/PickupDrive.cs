@@ -28,9 +28,11 @@ namespace BbB.Library
         /// <returns></returns>
         public override IEnumerable<User> Users()
         {
-            if(OrdersReal == null)
-                OrdersReal = new Dictionary<User, List<OrderItem>>();
-            return OrdersReal.Keys;
+            if (UsersReal == null)
+                UsersReal = new List<User>();
+            if (OrdersReal == null)
+                OrdersReal = new Dictionary<int, List<OrderItem>>();
+            return UsersReal;
         }
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace BbB.Library
         /// <returns></returns>
         public List<OrderItem> OrderForUser(User user)
         {
-            return OrdersReal[user].ToList();
+            return OrdersReal[user.Id].ToList();
         }
 
         /// <summary>
@@ -52,7 +54,8 @@ namespace BbB.Library
         {
             if (Users().Contains(user) || Users().Count()>=MAX_PICKUP_SIZE)
                 return false;
-            OrdersReal.Add(user, new List<OrderItem>());
+            UsersReal.Add(user);
+            OrdersReal.Add(user.Id, new List<OrderItem>());
             return true;
         }
 
@@ -65,7 +68,8 @@ namespace BbB.Library
         {
             if (!Users().Contains(user))
                 return false;
-            OrdersReal.Remove(user);
+            UsersReal.Remove(user);
+            OrdersReal.Remove(user.Id);
             return true;
         }
 
@@ -79,7 +83,7 @@ namespace BbB.Library
         {
             if (!Users().Contains(user))
                 return false;
-            foreach(OrderItem i in OrdersReal[user])
+            foreach(OrderItem i in OrdersReal[user.Id])
             {
                 if (i.Equals(item))
                 {
@@ -87,7 +91,7 @@ namespace BbB.Library
                     return true;
                 }
             }
-            OrdersReal[user].Add(item);
+            OrdersReal[user.Id].Add(item);
             return true;
         }
 
@@ -101,7 +105,7 @@ namespace BbB.Library
         {
             if (!Users().Contains(user))
                 return false;
-            return OrdersReal[user].Remove(item);
+            return OrdersReal[user.Id].Remove(item);
         }
     }
 }

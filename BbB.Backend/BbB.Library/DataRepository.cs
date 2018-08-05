@@ -707,5 +707,35 @@ namespace BbB.Library
                 throw;
             }
         }
+
+        /// <summary>
+        /// Archive drive with given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Drive> GetArchiveDrive(int id)
+        {
+            return Mapper.Map(await bbBContext.ArchiveDrive.Where(d => d.Id == id)
+                .Include(d => d.Destination).Include(d => d.Driver).ThenInclude(d => d.User)
+                .Include(d => d.ArchiveOrder).ThenInclude(o => o.User)
+                .Include(d => d.ArchiveOrder).ThenInclude(o => o.ArchiveItem)
+                .Include(d => d.ArchiveUserJoin).ThenInclude(j => j.User)
+                .FirstOrDefaultAsync());
+        }
+
+        /// <summary>
+        /// all archived drives
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Drive>> GetArchiveDrives()
+        {
+            return Mapper.Map(await bbBContext.ArchiveDrive
+                .Include(d => d.Destination).Include(d => d.Driver).ThenInclude(d => d.User)
+                .Include(d => d.ArchiveOrder).ThenInclude(o=>o.User)
+                .Include(d => d.ArchiveOrder).ThenInclude(o => o.ArchiveItem)
+                .Include(d => d.ArchiveUserJoin).ThenInclude(j=>j.User)
+                .ToListAsync());
+
+        }
     }
 }
