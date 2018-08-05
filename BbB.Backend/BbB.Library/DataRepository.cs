@@ -775,11 +775,12 @@ namespace BbB.Library
         /// retmoves an item from a destinations menu and returns the new destination
         /// </summary>
         /// <returns></returns>
-        public async Task<Destination> RemoveMenuItem(MenuItem item, int destId)
+        public async Task<Destination> RemoveMenuItem(int itemId, int destId)
         {
             try
             {
-                bbBContext.MenuItem.Remove(Mapper.Map(item, destId));
+                Data.MenuItem m = await bbBContext.MenuItem.Where(d => d.Id == itemId).FirstOrDefaultAsync();
+                bbBContext.MenuItem.Remove(m);
                 await bbBContext.SaveChangesAsync();
                 var get = await bbBContext.Destination
                     .Where(d => d.Id == destId)
