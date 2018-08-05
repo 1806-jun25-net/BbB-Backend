@@ -608,12 +608,62 @@ namespace BbB.Library
             }
         }
 
+        public async Task<int> JoinPickup(int driveId, int userId)
+        {
+            var pickup = new UserPickup
+            {
+                DriveId = driveId,
+                UserId = userId
+            };
+            try
+            {
+                bbBContext.Add(pickup);
+                await bbBContext.SaveChangesAsync();
+
+                var createdPickup = await bbBContext.UserPickup.FirstOrDefaultAsync(x => x.DriveId == driveId && x.UserId == userId);
+                return createdPickup.Id;
+            }
+            catch (Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+        }
+
+        public async Task NewOrderItem(Library.OrderItem orderItem, int orderId)
+        {
+            try
+            {
+                bbBContext.Add(Mapper.Map(orderItem, orderId));
+                await bbBContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+        }
+
         public async Task<List<int>> GetIdOfJoinedDrives(int userId)
         {
             try
             {
                 var driveIds = await bbBContext.UserJoin.Where(x => x.UserId == userId).Select(x => x.DriveId).ToListAsync();
                 return driveIds;
+            }
+            catch(Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+        }
+        
+        public async Task<List<int>> GetIdOfJoinedPickups(int userId)
+        {
+            try
+            {
+                var drivesIds = await bbBContext.UserPickup.Where(x => x.UserId == userId).Select(x => x.DriveId).ToListAsync();
+                return drivesIds;
             }
             catch(Exception ex)
             {
@@ -675,8 +725,6 @@ namespace BbB.Library
                 throw;
             }
         }
-
-
 
         /// <summary>
         /// Adds a message with given from, to, content at current Time.
