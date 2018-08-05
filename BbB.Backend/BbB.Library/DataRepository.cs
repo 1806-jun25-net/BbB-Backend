@@ -735,7 +735,40 @@ namespace BbB.Library
                 .Include(d => d.ArchiveOrder).ThenInclude(o => o.ArchiveItem)
                 .Include(d => d.ArchiveUserJoin).ThenInclude(j=>j.User)
                 .ToListAsync());
+        }
 
+        public async Task<Destination> NewDestination(Destination input)
+        {
+            try
+            {
+                bbBContext.Destination.Add(Mapper.Map(input));
+                await bbBContext.SaveChangesAsync();
+                var get = await bbBContext.Destination
+                    .Where(d => d.StreetAddress == input.Address && d.Title == input.Name)
+                    .FirstOrDefaultAsync();
+                return Mapper.Map(get);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<MenuItem> NewMenuItem(MenuItem input, int destId)
+        {
+            try
+            {
+                bbBContext.MenuItem.Add(Mapper.Map(input,destId));
+                await bbBContext.SaveChangesAsync();
+                var get = await bbBContext.MenuItem
+                    .Where(d => d.ItemName == input.Name && d.DestinationId == destId)
+                    .FirstOrDefaultAsync();
+                return Mapper.Map(get);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
