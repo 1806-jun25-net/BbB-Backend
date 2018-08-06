@@ -15,7 +15,6 @@ namespace BbB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class DriveController : Controller
     {
         private readonly DataRepository data;
@@ -158,6 +157,21 @@ namespace BbB.API.Controllers
             }
         }
 
+        [HttpPost("{driveId}/{userId}/leavePickup")]
+        public async Task<ActionResult> LeavePickup(int driveId, int userId)
+        {
+            try
+            {
+                await data.LeavePickup(driveId, userId);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                logger.Info(ex);
+                return BadRequest();
+            }
+        }
+
         /// <summary>
         /// Get the Ids of joined drives by user
         /// </summary>
@@ -211,11 +225,5 @@ namespace BbB.API.Controllers
                 return BadRequest();
             }
         }
-
-        //[HttpGet("{driveId}/Pickups")]
-        //public async Task<ActionResult> PickupsByDriveId(int driveId)
-        //{
-        //    var pickups = await data.GetPickups(driveId);
-        //}
     }
 }
