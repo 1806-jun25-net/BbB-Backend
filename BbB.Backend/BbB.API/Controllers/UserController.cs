@@ -125,6 +125,7 @@ namespace BbB.API.Controllers
         }
 
         [HttpPost("loginadmin")]
+        [AllowAnonymous]
         [ProducesResponseType(204)]
         [ProducesResponseType(403)]
         public async Task<ActionResult> LoginAdmin(User input, [FromServices] RoleManager<IdentityRole> roleManager,
