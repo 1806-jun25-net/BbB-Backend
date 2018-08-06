@@ -15,7 +15,6 @@ namespace BbB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class DriveController : Controller
     {
         private readonly DataRepository data;
@@ -154,6 +153,21 @@ namespace BbB.API.Controllers
             }
             catch(Exception ex)
             {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("{driveId}/{userId}/leavePickup")]
+        public async Task<ActionResult> LeavePickup(int driveId, int userId)
+        {
+            try
+            {
+                await data.LeavePickup(driveId, userId);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                logger.Info(ex);
                 return BadRequest();
             }
         }

@@ -618,6 +618,26 @@ namespace BbB.Library
             }
         }
 
+        public async Task LeavePickup(int driveId, int userId)
+        {
+            var userPickup = bbBContext.UserPickup.FirstOrDefault(x => x.DriveId == driveId && x.UserId == userId);
+            var userOrder = bbBContext.OrderItem.Where(x => x.OrderId == userPickup.Id && x.Order.UserId == userId).ToList();
+            try
+            {
+                foreach (var item in userOrder)
+                {
+                    bbBContext.Remove(item);
+                }
+                bbBContext.Remove(userPickup);
+                await bbBContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.Info(ex);
+                throw;
+            }
+        }
+
         public async Task<int> JoinPickup(int driveId, int userId)
         {
             var pickup = new UserPickup
