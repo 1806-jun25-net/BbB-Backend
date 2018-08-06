@@ -171,6 +171,7 @@ namespace BbB.API.Controllers
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<ActionResult> Register(User input, [FromServices] UserManager<IdentityUser> userManager)
