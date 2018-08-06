@@ -225,11 +225,5 @@ namespace BbB.API.Controllers
                 return BadRequest();
             }
         }
-
-        //[HttpGet("{driveId}/Pickups")]
-        //public async Task<ActionResult> PickupsByDriveId(int driveId)
-        //{
-        //    var pickups = await data.GetPickups(driveId);
-        //}
     }
 }
